@@ -1,0 +1,20 @@
+{
+  "verifiedAt": "2026-09-22T09:17:44.063581+00:00",
+  "commit": "0e6352953abcd4a58a67819a2a5c53cc9bcfacba",
+  "url": "https://github.com/shi1720/AWS-Communication-Developer/actions/runs/35709076135",
+  "conclusion": "success",
+  "runner": "ubuntu-24.04",
+  "node": 22,
+  "checks": [
+    "npm ci",
+    "TypeScript",
+    "115 unit/integration tests",
+    "production build",
+    "AWS CDK synthesis",
+    "compiled HTTP recovery smoke",
+    "dependency audit"
+  ],
+  "branches": [
+    "main"
+  ]
+}

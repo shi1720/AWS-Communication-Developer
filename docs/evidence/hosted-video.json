@@ -32,5 +32,15 @@
     "contentRange": "bytes 0-1023/6398064",
     "bytes": 1024
   },
-  "verifiedAt": "2026-09-22T09:02:57.822407+00:00"
+  "verifiedAt": "2026-09-22T09:02:57.822407+00:00",
+  "browserCheck": {
+    "checkedAt": "2026-09-22T09:20:40.205653+00:00",
+    "browser": "Safari",
+    "pageLayout": "visually inspected",
+    "playControlChangedToPause": true,
+    "pauseControlChangedToPlay": true,
+    "browserAudioIndicatorObserved": true,
+    "videoSurfaceScreenshot": "ScreenCaptureKit audio/video capture failure; moving frame not visually verified through the browser tool",
+    "encodedVideoVerification": "See deliverables/SecondCrate-Video-Verification.json; complete decode and 20 encoded shots reviewed"
+  }
 }

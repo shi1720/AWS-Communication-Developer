@@ -1,0 +1,29 @@
+{
+  "verifiedAt": "2026-09-22T09:17:44.063581+00:00",
+  "submissionId": 1192846,
+  "name": "SecondCrate",
+  "state": "draft",
+  "completedSteps": 3,
+  "saved": [
+    "overview and pitch",
+    "3:2 cover",
+    "seven-section project story with 115-test evidence and AWS disclosure",
+    "18 technology tags",
+    "app URL",
+    "repository URL",
+    "standalone testing instructions URL",
+    "uploaded YouTube draft URL (not public yet)",
+    "four captioned gallery images",
+    "private code repository access",
+    "AWS architecture JPEG attachment",
+    "WhatsApp implementation disclosure"
+  ],
+  "unresolved": [
+    "genuine ACE opportunity ID",
+    "verified AWS CDS runtime declarations",
+    "country and AWS Partner headquarters facts",
+    "age and conflict-of-interest declarations",
+    "public YouTube visibility"
+  ],
+  "finalSubmitted": false
+}

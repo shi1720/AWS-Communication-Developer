@@ -53,8 +53,8 @@
   },
   "limitations": [
     "Physical mobile-device testing not performed",
-    "Live external messaging and Bedrock were not available",
-    "Chrome control returned an empty window during publishing; YouTube upload remains pending"
+    "Live external messaging and Bedrock were not available"
   ],
-  "screenshots": "Hashes retained in deliverables/SecondCrate-Video-Verification.json"
+  "screenshots": "Hashes retained in deliverables/SecondCrate-Video-Verification.json",
+  "publicationStatus": "YouTube upload saved as private draft; public publication not yet verified. Native browser control is unreliable on YouTube Studio."
 }

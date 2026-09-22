@@ -147,3 +147,5 @@ deliverables/        Presentation, PDFs and recording kit
 ## Authorship and license
 
 Created and owned by **Shivam Gupta**, developed with AI-assisted engineering, research and design. Product decisions, configuration, review and final submission remain the creator's responsibility. Demo businesses and people are fictional. Original application code and artwork are licensed under [MIT](LICENSE). Third-party packages and fonts retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).
+
+Judge walkthrough: [Testing instructions](docs/TESTING_INSTRUCTIONS.md).

@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-09-22T09:19:00.898453+00:00",
+  "videoId": "Ox6BG9KwP7w",
+  "url": "https://youtu.be/Ox6BG9KwP7w",
+  "nativeObservedStatus": "Saved as private; checks complete with no issues",
+  "titleSaved": "SecondCrate | Turn cancelled produce orders into confirmed sales",
+  "thumbnailUploaded": true,
+  "descriptionVerified": false,
+  "separateSubtitleTrackVerified": false,
+  "publicPublicationVerified": false,
+  "publicOembed": {
+    "status": 403,
+    "message": "Forbidden"
+  },
+  "fallbackPublicVideoPage": "https://secondcrate.web.app/demo.html",
+  "browserControlBlocker": "YouTube Studio caused blank or stale accessibility surfaces in Chrome and Safari. Browser connector also reports unsupported Codex auth method: apikey."
+}
