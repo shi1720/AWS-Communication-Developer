@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-09-22T09:37:37.554662+00:00",
+  "readOnly": true,
+  "region": "us-east-1",
+  "catalog": "AWS",
+  "listPartners": {
+    "status": "success",
+    "partnerCount": 0
+  },
+  "listOpportunities": {
+    "status": "rejected",
+    "errorCode": "AccessDeniedException",
+    "reason": "INCOMPATIBLE_BENEFIT_AWS_PARTNER_STATE",
+    "providerMeaning": "This action requires an active AWS Partner benefit."
+  },
+  "conclusion": "No partner registration is linked to this AWS account. Membership through another organization or account remains unknown. No APN enrollment or ACE opportunity was created.",
+  "freePlanPreserved": true
+}

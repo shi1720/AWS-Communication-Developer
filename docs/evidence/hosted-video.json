@@ -2,9 +2,10 @@
   "demo.html": {
     "status": 200,
     "contentType": "text/html; charset=utf-8",
-    "bytes": 5254,
-    "sha256": "abe9b32979b579d16374de6e61ad8a4bcc720f3bdab3a88c4cd05fde4224e752",
-    "matchesLocal": true
+    "bytes": 5313,
+    "sha256": "c5e66d09f29aae7fbf2f62049d75a960c2ea88bcb182c30a7b9f41ef4e52b53b",
+    "matchesLocal": true,
+    "publicYoutubeLink": true
   },
   "demo.mp4": {
     "status": 200,
@@ -42,5 +43,6 @@
     "browserAudioIndicatorObserved": true,
     "videoSurfaceScreenshot": "ScreenCaptureKit audio/video capture failure; moving frame not visually verified through the browser tool",
     "encodedVideoVerification": "See deliverables/SecondCrate-Video-Verification.json; complete decode and 20 encoded shots reviewed"
-  }
+  },
+  "htmlReverifiedAt": "2026-09-22T09:47:44.916Z"
 }

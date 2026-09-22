@@ -1,0 +1,65 @@
+{
+  "verifiedAt": "2026-09-22T09:48:09.641137+00:00",
+  "target": "https://secondcrate.web.app",
+  "browser": "Codex in-app browser",
+  "method": "Browser viewport override with DOM measurements and visual screenshots",
+  "physicalMobileDeviceTested": false,
+  "viewportRestored": true,
+  "frontend": {
+    "javascript": "/assets/index-BASiDIAO.js",
+    "stylesheet": "/assets/index-CjZKFz3m.css"
+  },
+  "checks": [
+    {
+      "viewport": "390x844",
+      "views": [
+        "login",
+        "overview",
+        "conversations"
+      ],
+      "documentWidth": 390,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": "390x844",
+      "view": "navigation drawer",
+      "escapeDismisses": true
+    },
+    {
+      "viewport": "390x844",
+      "view": "recovery intake after fix",
+      "dialogClientWidth": 366,
+      "dialogScrollWidth": 366,
+      "fieldsVisuallyReadable": true
+    },
+    {
+      "viewport": "320x740",
+      "view": "recovery intake after fix",
+      "documentWidth": 320,
+      "dialogClientWidth": 296,
+      "dialogScrollWidth": 296,
+      "fieldsVisuallyReadable": true
+    },
+    {
+      "viewport": "1440x900",
+      "view": "conversations",
+      "documentWidth": 1440,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": "1440x900",
+      "view": "recovery intake",
+      "dialogClientWidth": 720,
+      "dialogScrollWidth": 720
+    }
+  ],
+  "issueResolved": "The intake dialog itself fitted narrow screens, but its two-column contents clipped date fields. The form now uses a single column below 640 px with shrinkable grid items and controls.",
+  "mobileInteraction": {
+    "acceptedQuantity": 12,
+    "pricePerCrateGBP": 17,
+    "bookedSalesGBP": 204,
+    "remainingCrates": 28,
+    "persistedAfterReload": true,
+    "externalMessagesSent": 0
+  }
+}

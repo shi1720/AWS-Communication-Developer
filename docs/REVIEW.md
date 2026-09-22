@@ -2,7 +2,7 @@
 
 Reviewed 22 September 2026 against the supplied AWS CDS hackathon rubric. This is an internal engineering review of the code and local evidence, not an AWS endorsement, penetration test, actual judge result, customer validation or prediction of winning.
 
-This document preserves the initial 100-test checkpoint and its fixes. The current hosted release has 115 passing tests; see [FINAL_REVIEW.md](FINAL_REVIEW.md) and [deployment evidence](evidence/firebase-deployment.json) for the later assessment. Historical counts and pending states below describe that earlier checkpoint.
+This document preserves the initial 100-test checkpoint and its fixes. The current hosted release has 127 passing tests; see [FINAL_REVIEW.md](FINAL_REVIEW.md) and [deployment evidence](evidence/firebase-deployment.json) for the later assessment. Historical counts and pending states below describe that earlier checkpoint.
 
 ## Evidence available
 

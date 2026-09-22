@@ -1,4 +1,6 @@
 import { randomUUID } from "node:crypto";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { GetCallerIdentityCommand, STSClient } from "@aws-sdk/client-sts";
 import {
   GetAccountCommand,
@@ -20,11 +22,13 @@ export interface ValidationDependencies {
   ses?: Sender;
   messaging?: MessagingAdapter;
   reasoning?: ReasoningAdapter;
+  accountPlan?: (region: string, env: Env) => Promise<unknown>;
 }
 export interface ValidationOptions {
   env?: Env;
   region?: string;
   dependencies?: ValidationDependencies;
+  checkAccountPlan?: boolean;
 }
 export interface PreflightReport {
   schemaVersion: 1;
@@ -33,6 +37,28 @@ export interface PreflightReport {
   readOnly: true;
   region: string;
   credentials: { valid: boolean; errorCode?: string };
+  readiness: {
+    status:
+      | "credentials_invalid"
+      | "activation_blocked"
+      | "ses_accessible"
+      | "ses_unavailable";
+    deploymentServicesChecked: false;
+    simulatorSendReady: boolean;
+  };
+  accountPlan?: {
+    requested: true;
+    checked: boolean;
+    type?: "FREE" | "PAID";
+    status?: "NOT_STARTED" | "ACTIVE" | "EXPIRED";
+    remainingCredits?: { amount: number; unit: string };
+    errorCode?: string;
+  };
+  diagnostics?: {
+    code: string;
+    summary: string;
+    nextSteps: string[];
+  }[];
   channels: {
     emailConfigured: boolean;
     whatsappConfigured: boolean;
@@ -57,6 +83,144 @@ export interface PreflightReport {
   bedrock: { configured: boolean; modelId?: string; invocationChecked: false };
 }
 export const SIMULATOR_DESTINATION = "success@simulator.amazonses.com";
+const execFileAsync = promisify(execFile);
+const SUBSCRIPTION_ERRORS = new Set([
+  "SubscriptionRequiredException",
+  "SubscriptionRequired",
+  "OptInRequired",
+]);
+
+/** Optional CLI read keeps Free Tier diagnostics out of the application bundle
+ * and avoids adding an SDK dependency used only for account troubleshooting. */
+async function readAccountPlan(region: string, env: Env): Promise<unknown> {
+  try {
+    const { stdout } = await execFileAsync(
+      "aws",
+      [
+        "freetier",
+        "get-account-plan-state",
+        "--region",
+        region,
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "5",
+        "--cli-read-timeout",
+        "10",
+      ],
+      {
+        env: {
+          ...process.env,
+          ...env,
+          AWS_REGION: region,
+          AWS_DEFAULT_REGION: region,
+        },
+        timeout: 15_000,
+        maxBuffer: 65_536,
+        encoding: "utf8",
+        windowsHide: true,
+      },
+    );
+    return JSON.parse(stdout);
+  } catch (error) {
+    const failure = error as {
+      code?: string;
+      killed?: boolean;
+      stderr?: string;
+    };
+    const code =
+      failure.code === "ENOENT"
+        ? "AwsCliUnavailable"
+        : failure.killed
+          ? "AccountPlanCheckTimedOut"
+          : (failure.stderr?.match(/\(([A-Za-z][A-Za-z0-9]{0,70})\)/)?.[1] ??
+            "AccountPlanCheckFailed");
+    // Raw CLI output may contain account or credential details. Never return it.
+    throw Object.assign(new Error("Optional account plan check unavailable."), {
+      name: code,
+    });
+  }
+}
+
+function sanitizedAccountPlan(
+  value: unknown,
+): NonNullable<PreflightReport["accountPlan"]> {
+  const data = value as Record<string, unknown> | null;
+  if (
+    !data ||
+    !["FREE", "PAID"].includes(String(data.accountPlanType)) ||
+    !["NOT_STARTED", "ACTIVE", "EXPIRED"].includes(
+      String(data.accountPlanStatus),
+    )
+  )
+    throw Object.assign(new Error("Unexpected account plan response."), {
+      name: "InvalidAccountPlanResponse",
+    });
+  const credits = data.accountPlanRemainingCredits as
+    { amount?: unknown; unit?: unknown } | undefined;
+  return {
+    requested: true,
+    checked: true,
+    type: data.accountPlanType as "FREE" | "PAID",
+    status: data.accountPlanStatus as "NOT_STARTED" | "ACTIVE" | "EXPIRED",
+    ...(typeof credits?.amount === "number" &&
+    Number.isFinite(credits.amount) &&
+    credits.amount >= 0 &&
+    typeof credits.unit === "string" &&
+    /^[A-Z]{3}$/.test(credits.unit)
+      ? { remainingCredits: { amount: credits.amount, unit: credits.unit } }
+      : {}),
+  };
+}
+
+function addActivationDiagnostics(report: PreflightReport) {
+  const blocked = [report.ses.errorCode, report.ses.sender.errorCode].some(
+    (code) => code && SUBSCRIPTION_ERRORS.has(code),
+  );
+  report.readiness.status = blocked
+    ? "activation_blocked"
+    : report.ses.accountChecked
+      ? "ses_accessible"
+      : "ses_unavailable";
+  report.readiness.simulatorSendReady =
+    report.ses.sendingEnabled === true && report.ses.sender.verified;
+  const diagnostics: NonNullable<PreflightReport["diagnostics"]> = [];
+  if (blocked)
+    diagnostics.push({
+      code: "AWS_ACTIVATION_PENDING",
+      summary:
+        "Authentication succeeded, but SES rejects access because the account lacks a service subscription. This is not a sender-verification result or proof that a Paid plan is required.",
+      nextSteps: [
+        "Keep the chosen Free plan. Check any remaining Complete your AWS registration step and payment/customer verification status in the AWS console.",
+        "If verification was just completed, allow AWS activation to finish. If the console loops or the restriction persists, ask AWS account support to diagnose service enrollment.",
+        "Before deployment, confirm CloudFormation, Lambda and DynamoDB access separately; this preflight does not check those services.",
+      ],
+    });
+  if (
+    report.accountPlan?.type === "FREE" &&
+    report.accountPlan.status === "NOT_STARTED"
+  )
+    diagnostics.push({
+      code: "FREE_PLAN_NOT_STARTED",
+      summary:
+        "AWS reports FREE / NOT_STARTED. Valid sign-in credentials do not establish completed service activation.",
+      nextSteps: [
+        "Review signup completion and verification status without upgrading the plan. The exact outstanding step is not exposed by GetAccountPlanState.",
+        "Do not use UpgradeAccountPlan as an activation repair. Joining AWS Partner Network or AWS Organizations can automatically upgrade a Free account.",
+      ],
+    });
+  if (report.accountPlan?.errorCode)
+    diagnostics.push({
+      code: "ACCOUNT_PLAN_CHECK_UNAVAILABLE",
+      summary:
+        "The optional Free Tier plan read was unavailable. It does not change the observed STS or SES results or the credential-based exit code.",
+      nextSteps: [
+        "Check AWS CLI availability and freetier:GetAccountPlanState permission if plan diagnostics are needed. Do not infer that working services are blocked from this optional read failure.",
+      ],
+    });
+  if (diagnostics.length) report.diagnostics = diagnostics;
+}
 export function safeErrorCode(error: unknown): string {
   const name = (error as { name?: unknown })?.name;
   return typeof name === "string" && /^[A-Za-z][A-Za-z0-9]{0,70}$/.test(name)
@@ -134,6 +298,9 @@ export async function runPreflight(
   const env = options.env ?? process.env,
     region = resolveRegion(options),
     dependencies = options.dependencies ?? {};
+  const checkAccountPlan =
+    options.checkAccountPlan === true ||
+    env.SECONDCRATE_PREFLIGHT_ACCOUNT_PLAN === "true";
   const report: PreflightReport = {
     schemaVersion: 1,
     product: "SecondCrate",
@@ -141,6 +308,14 @@ export async function runPreflight(
     readOnly: true,
     region,
     credentials: { valid: false },
+    readiness: {
+      status: "credentials_invalid",
+      deploymentServicesChecked: false,
+      simulatorSendReady: false,
+    },
+    ...(checkAccountPlan
+      ? { accountPlan: { requested: true as const, checked: false } }
+      : {}),
     channels: {
       emailConfigured: Boolean(env.SES_FROM_EMAIL),
       whatsappConfigured: Boolean(
@@ -172,9 +347,14 @@ export async function runPreflight(
     return report;
   }
   const ses = dependencies.ses ?? new SESv2Client({ region, maxAttempts: 1 });
-  const [account, sender] = await Promise.allSettled([
+  const [account, sender, plan] = await Promise.allSettled([
     ses.send(new GetAccountCommand({})),
     checkSender(ses, env.SES_FROM_EMAIL),
+    checkAccountPlan
+      ? (dependencies.accountPlan ?? readAccountPlan)(region, env).then(
+          sanitizedAccountPlan,
+        )
+      : Promise.resolve(undefined),
   ]);
   if (account.status === "fulfilled") {
     report.ses.accountChecked = true;
@@ -183,6 +363,11 @@ export async function runPreflight(
   } else report.ses.errorCode = safeErrorCode(account.reason);
   if (sender.status === "fulfilled") report.ses.sender = sender.value;
   else report.ses.sender.errorCode = safeErrorCode(sender.reason);
+  if (checkAccountPlan) {
+    if (plan.status === "fulfilled") report.accountPlan = plan.value;
+    else report.accountPlan!.errorCode = safeErrorCode(plan.reason);
+  }
+  addActivationDiagnostics(report);
   return report;
 }
 export interface VerificationOptions extends ValidationOptions {
@@ -349,12 +534,15 @@ export function parseArgs(args: string[], verify: boolean) {
     sendSimulator?: boolean;
     confirmSender?: boolean;
     invokeBedrock?: boolean;
+    checkAccountPlan?: boolean;
   } = {};
   for (let index = 0; index < args.length; index++) {
     const argument = args[index];
     if (argument === "--help" || argument === "-h") options.help = true;
     else if (argument === "--region" && args[index + 1])
       options.region = args[++index];
+    else if (!verify && argument === "--account-plan")
+      options.checkAccountPlan = true;
     else if (verify && argument === "--send-simulator")
       options.sendSimulator = true;
     else if (verify && argument === "--confirm-sender")

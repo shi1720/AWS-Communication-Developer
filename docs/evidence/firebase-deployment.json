@@ -1,15 +1,15 @@
 {
-  "verifiedAt": "2026-09-22T08:31:27.292Z",
+  "verifiedAt": "2026-09-22T09:47:12.723365+00:00",
   "url": "https://secondcrate.web.app",
   "stage": "hosted-rehearsal",
   "qualifyingAWSRuntime": false,
-  "cloudRunRevision": "secondcrate-00002-b78",
-  "hostingVersion": "sites/secondcrate/versions/11d919a2f91780c6",
+  "cloudRunRevision": "secondcrate-00003-p98",
+  "hostingVersion": "sites/secondcrate/versions/70dcb50c1226502b",
   "region": "europe-west1",
   "storage": "Firestore named database secondcrate; transactional chunked workspace snapshots",
   "frontend": {
-    "javascript": "/assets/index-CFFJh_pU.js",
-    "stylesheet": "/assets/index-BtHkn2Ey.css"
+    "javascript": "/assets/index-BASiDIAO.js",
+    "stylesheet": "/assets/index-CjZKFz3m.css"
   },
   "session": {
     "cookieName": "__session",
@@ -28,7 +28,7 @@
     "hashedAsset": "public,max-age=31536000,immutable"
   },
   "validation": {
-    "unitAndIntegrationTests": 115,
+    "unitAndIntegrationTests": 127,
     "productionBuild": "passed",
     "cloudBuild": "passed",
     "hostedRecoverySmoke": "passed",
@@ -42,5 +42,17 @@
   ],
   "videoPage": "https://secondcrate.web.app/demo.html",
   "videoSha256": "fa2e197529b3f38ac7984e4103f1e70a528f5df9c79a963c5c3ba30f117e82ef",
-  "staticMediaPublishedAt": "2026-09-22T08:56:59.280362+00:00"
+  "staticMediaPublishedAt": "2026-09-22T08:56:59.280362+00:00",
+  "youtubeUrl": "https://youtu.be/Ox6BG9KwP7w",
+  "latestRelease": {
+    "cloudBuildId": "cbcdf1ea-75b8-440f-a5fe-dcd5ddfca956",
+    "imageTag": "release-20260922094338",
+    "imageDigest": "sha256:64e81442d57cb3196ed8dd7df9d5b21f8cf4ca26a5dea1bafe84fcea8034ce88",
+    "changes": [
+      "Responsive intake form fits 320 px and 390 px viewports",
+      "Confirmed buyers can ask order questions without an active offer",
+      "AWS preflight distinguishes valid credentials from service readiness",
+      "Public YouTube walkthrough linked from hosted video page"
+    ]
+  }
 }

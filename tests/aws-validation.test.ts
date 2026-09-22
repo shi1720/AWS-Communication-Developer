@@ -16,12 +16,10 @@ const env = {
 };
 function dependencies() {
   const sts = {
-    send: vi
-      .fn()
-      .mockResolvedValue({
-        Account: "123456789012",
-        Arn: "arn:aws:iam::123456789012:root",
-      }),
+    send: vi.fn().mockResolvedValue({
+      Account: "123456789012",
+      Arn: "arn:aws:iam::123456789012:root",
+    }),
   };
   const ses = {
     send: vi.fn(async (command) => {
@@ -41,16 +39,20 @@ function dependencies() {
       .mockResolvedValue({ status: "sent", providerId: "provider-test-id" }),
   };
   const reasoning = {
-    decide: vi
-      .fn()
-      .mockResolvedValue({
-        decision: { intent: "accept", quantity: 8, unitPrice: 17 },
-        model: "test-model",
-        inputTokens: 400,
-        outputTokens: 25,
-      }),
+    decide: vi.fn().mockResolvedValue({
+      decision: { intent: "accept", quantity: 8, unitPrice: 17 },
+      model: "test-model",
+      inputTokens: 400,
+      outputTokens: 25,
+    }),
   };
-  return { sts, ses, messaging, reasoning };
+  const accountPlan = vi.fn().mockResolvedValue({
+    accountId: "123456789012",
+    accountPlanType: "FREE",
+    accountPlanStatus: "ACTIVE",
+    accountPlanRemainingCredits: { amount: 100, unit: "USD" },
+  });
+  return { sts, ses, messaging, reasoning, accountPlan };
 }
 describe("AWS preflight and explicit verification CLI", () => {
   it("reports a verified domain fallback and sandbox without printing sender or principal PII", async () => {
@@ -68,6 +70,130 @@ describe("AWS preflight and explicit verification CLI", () => {
     expect(output).not.toContain("123456789012");
     expect(mocks.messaging.send).not.toHaveBeenCalled();
     expect(mocks.reasoning.decide).not.toHaveBeenCalled();
+    expect(mocks.accountPlan).not.toHaveBeenCalled();
+    expect(report.readiness).toEqual({
+      status: "ses_accessible",
+      deploymentServicesChecked: false,
+      simulatorSendReady: true,
+    });
+  });
+  it("diagnoses FREE / NOT_STARTED and missing service subscription without exposing account fields", async () => {
+    const mocks = dependencies();
+    mocks.ses.send.mockRejectedValue(
+      Object.assign(
+        new Error(
+          "Account 123456789012 private-operator@example.com needs subscription",
+        ),
+        { name: "SubscriptionRequiredException" },
+      ),
+    );
+    mocks.accountPlan.mockResolvedValue({
+      accountId: "123456789012",
+      accountPlanType: "FREE",
+      accountPlanStatus: "NOT_STARTED",
+      accountPlanRemainingCredits: { amount: 100, unit: "USD" },
+      unexpectedPrivateField: "private-operator@example.com",
+    });
+    const report = await runPreflight({
+      env,
+      dependencies: mocks,
+      checkAccountPlan: true,
+    });
+    expect(report.credentials.valid).toBe(true);
+    expect(report.readiness).toEqual({
+      status: "activation_blocked",
+      deploymentServicesChecked: false,
+      simulatorSendReady: false,
+    });
+    expect(report.accountPlan).toEqual({
+      requested: true,
+      checked: true,
+      type: "FREE",
+      status: "NOT_STARTED",
+      remainingCredits: { amount: 100, unit: "USD" },
+    });
+    expect(report.diagnostics?.map((diagnostic) => diagnostic.code)).toEqual([
+      "AWS_ACTIVATION_PENDING",
+      "FREE_PLAN_NOT_STARTED",
+    ]);
+    expect(mocks.accountPlan).toHaveBeenCalledExactlyOnceWith("eu-west-2", env);
+    expect(JSON.stringify(report)).not.toMatch(
+      /123456789012|private-operator|unexpectedPrivateField/,
+    );
+    expect(mocks.messaging.send).not.toHaveBeenCalled();
+    expect(mocks.reasoning.decide).not.toHaveBeenCalled();
+  });
+  it("reports OptInRequired with actionable guidance even when plan checking is not enabled", async () => {
+    const mocks = dependencies();
+    mocks.ses.send.mockRejectedValue(
+      Object.assign(new Error("private failure"), { name: "OptInRequired" }),
+    );
+    const report = await runPreflight({ env, dependencies: mocks });
+    expect(report.readiness.status).toBe("activation_blocked");
+    expect(report.accountPlan).toBeUndefined();
+    expect(report.diagnostics?.[0].nextSteps.join(" ")).toContain(
+      "Keep the chosen Free plan",
+    );
+    expect(mocks.accountPlan).not.toHaveBeenCalled();
+  });
+  it("keeps an optional plan permission failure nonfatal when STS and SES work", async () => {
+    const mocks = dependencies();
+    mocks.accountPlan.mockRejectedValue(
+      Object.assign(new Error("private account 123456789012"), {
+        name: "AccessDeniedException",
+      }),
+    );
+    const result = await runVerification({
+      env: { ...env, SECONDCRATE_PREFLIGHT_ACCOUNT_PLAN: "true" },
+      dependencies: mocks,
+    });
+    expect(result.ok).toBe(true);
+    expect(result.preflight.readiness.status).toBe("ses_accessible");
+    expect(result.preflight.accountPlan).toEqual({
+      requested: true,
+      checked: false,
+      errorCode: "AccessDeniedException",
+    });
+    expect(result.preflight.diagnostics?.[0].code).toBe(
+      "ACCOUNT_PLAN_CHECK_UNAVAILABLE",
+    );
+    expect(JSON.stringify(result)).not.toContain("123456789012");
+    expect(mocks.messaging.send).not.toHaveBeenCalled();
+  });
+  it("does not turn a NOT_STARTED plan into a false service-access failure", async () => {
+    const mocks = dependencies();
+    mocks.accountPlan.mockResolvedValue({
+      accountPlanType: "FREE",
+      accountPlanStatus: "NOT_STARTED",
+    });
+    const report = await runPreflight({
+      env,
+      dependencies: mocks,
+      checkAccountPlan: true,
+    });
+    expect(report.ses.accountChecked).toBe(true);
+    expect(report.readiness.status).toBe("ses_accessible");
+    expect(report.diagnostics?.map((diagnostic) => diagnostic.code)).toEqual([
+      "FREE_PLAN_NOT_STARTED",
+    ]);
+  });
+  it("rejects unexpected plan payloads without copying provider metadata into output", async () => {
+    const mocks = dependencies();
+    mocks.accountPlan.mockResolvedValue({
+      accountId: "123456789012",
+      accountPlanType: "private@example.com",
+      accountPlanStatus: "ACTIVE",
+    });
+    const report = await runPreflight({
+      env,
+      dependencies: mocks,
+      checkAccountPlan: true,
+    });
+    expect(report.accountPlan?.errorCode).toBe("InvalidAccountPlanResponse");
+    expect(report.readiness.status).toBe("ses_accessible");
+    expect(JSON.stringify(report)).not.toMatch(
+      /123456789012|private@example.com/,
+    );
   });
   it("stops on credential failure without exposing SDK messages or trying downstream APIs", async () => {
     const mocks = dependencies();
@@ -76,13 +202,19 @@ describe("AWS preflight and explicit verification CLI", () => {
         name: "ExpiredTokenException",
       }),
     );
-    const result = await runPreflight({ env, dependencies: mocks });
+    const result = await runPreflight({
+      env,
+      dependencies: mocks,
+      checkAccountPlan: true,
+    });
     expect(result.credentials).toEqual({
       valid: false,
       errorCode: "ExpiredTokenException",
     });
     expect(JSON.stringify(result)).not.toContain("secret-key");
     expect(mocks.ses.send).not.toHaveBeenCalled();
+    expect(mocks.accountPlan).not.toHaveBeenCalled();
+    expect(result.readiness.status).toBe("credentials_invalid");
   });
   it("requires explicit sender confirmation before any network access", async () => {
     const mocks = dependencies();
@@ -100,6 +232,9 @@ describe("AWS preflight and explicit verification CLI", () => {
     expect(mocks.messaging.send).not.toHaveBeenCalled();
     expect(mocks.reasoning.decide).not.toHaveBeenCalled();
     expect(() => parseArgs(["--to", "person@example.com"], true)).toThrow();
+    expect(
+      parseArgs(["--account-plan", "--region", "us-east-1"], false),
+    ).toEqual({ checkAccountPlan: true, region: "us-east-1" });
   });
   it("sends only to the fixed simulator and validates a real-adapter-compatible synthetic decision", async () => {
     const mocks = dependencies();

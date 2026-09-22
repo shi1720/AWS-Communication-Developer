@@ -8,10 +8,11 @@ SecondCrate is a working hosted rehearsal with a focused commercial use case and
 
 ## Evidence reviewed
 
-- [Deployment record](evidence/firebase-deployment.json): 115 passing automated tests, production and cloud builds, Firebase Hosting, Cloud Run and the named Firestore database.
+- [Deployment record](evidence/firebase-deployment.json): 127 passing automated tests, production and cloud builds, Firebase Hosting, Cloud Run and the named Firestore database.
 - [Hosted recovery test](evidence/firebase-http-smoke.json): nine checks, including duplicate replay, simultaneous final-stock claims, persisted 40 crates/three orders/£708 and logout revocation. Zero external messages.
 - [Hosted security test](evidence/firebase-security-smoke.json): isolated workspaces, rejected cross-origin writes and forged sessions, durable private login, and blocked unconfigured live sending.
-- [Finished demonstration](https://secondcrate.web.app/demo.html): a 2:46 edited walkthrough of actual hosted-application captures, with disclosed OpenAI cedar narration and 45 burned-in caption cues. The [video verification record](../deliverables/SecondCrate-Video-Verification.json) records the full decode, source checksums and visual/audio review results. The hosted watch page is reachable; public YouTube publication remains blocked by browser-control failures.
+- [Finished demonstration](https://secondcrate.web.app/demo.html): a 2:46 edited walkthrough of actual hosted-application captures, with disclosed OpenAI cedar narration and 45 burned-in caption cues. The [video verification record](../deliverables/SecondCrate-Video-Verification.json) records the full decode, source checksums and visual/audio review results. The hosted watch page is reachable. The video is now also [public on YouTube](https://youtu.be/Ox6BG9KwP7w), with verified description, uploaded English captions, 1080p playback and anonymous oEmbed access.
+- [Responsive browser checks](evidence/responsive-browser.json): 320, 390 and 1440 px layouts, with the clipped intake form corrected. [Confirmed-order follow-up](evidence/hosted-order-followup.json) now returns recorded order details without changing stock, including verified persistence after reload.
 - Read-only inspection of the current server, client, Firestore adapter, deployment configuration and tests. No new critical isolation or oversell defect was identified in this bounded review. That finding is not a security guarantee.
 - Public GitHub repository, MIT license and README local links. Frozen narration and video-generation code were not changed by this review.
 
@@ -25,7 +26,7 @@ Scores assess evidence available now. Missing mandatory eligibility requirements
 | Creativity               |   8 / 10 | The cancelled-order exception, conditional replies and shared inventory form a memorable story. The defensible advantage would come from workflow adoption and integrations, not a novel model.       |
 | Technical execution      |  25 / 40 | Server authority, transactional persistence, retries, sessions and deployment are implemented and tested. Required AWS runtime evidence is still absent.                                              |
 | Functionality            |   7 / 10 | The public recovery and security paths work. Actual provider delivery, Bedrock interpretation and email account recovery remain unverified or unavailable.                                            |
-| Demo presentation        |  18 / 20 | Finished 2:46 narrated, captioned walkthrough with readable transaction evidence and a public hosted watch page. It accurately identifies the rehearsal; public YouTube verification remains pending. |
+| Demo presentation        |  18 / 20 | Finished 2:46 narrated, captioned walkthrough with readable transaction evidence, a public hosted watch page and public YouTube video. It accurately identifies the rehearsal and pending AWS runtime. |
 | Total                    | 73 / 100 | An evidence-limited prioritisation aid. No award or submission acceptance is implied.                                                                                                                 |
 
 ## Material remaining concerns

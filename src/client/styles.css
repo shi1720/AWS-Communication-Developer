@@ -2622,8 +2622,11 @@ td small {
 }
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 17px;
+}
+.form-grid > * {
+  min-width: 0;
 }
 .form-grid label {
   font-size: 10px;
@@ -2632,6 +2635,8 @@ td small {
 .form-grid input,
 .form-grid select,
 .form-grid textarea {
+  min-width: 0;
+  max-width: 100%;
   font-size: 11px;
   border-color: #e2e8d7;
   padding: 10px 11px;
@@ -4059,7 +4064,13 @@ td small {
     border-radius: 10px;
   }
   .modal-head {
-    padding: 22px;
+    padding: 20px 16px;
+  }
+  .modal-head > div {
+    min-width: 0;
+  }
+  .modal-head > .icon-button {
+    flex-shrink: 0;
   }
   .modal-head h2 {
     font-size: 20px;
@@ -4069,18 +4080,26 @@ td small {
   }
   .lot-form,
   .buyer-form {
-    padding: 20px 20px 0;
+    padding: 20px 16px 0;
   }
   .form-grid {
+    grid-template-columns: minmax(0, 1fr);
     gap: 14px;
   }
+  .form-grid > .span-2 {
+    grid-column: auto;
+  }
   .form-grid label {
-    font-size: 9px;
+    font-size: 12px;
   }
   .form-grid input,
-  .form-grid select {
-    font-size: 11px;
+  .form-grid select,
+  .form-grid textarea {
+    font-size: 16px;
     padding: 10px;
+  }
+  .intake-box > div {
+    flex-wrap: wrap;
   }
   .intake-box > small {
     display: block;

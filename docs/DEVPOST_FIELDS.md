@@ -30,7 +30,7 @@ Use the site's matching technology tags where offered. The narrative must contin
 | --------------------------- | -------------------------------------------------------------------------------------------- |
 | Code repository             | https://github.com/shi1720/AWS-Communication-Developer                                       |
 | Deployed application        | https://secondcrate.web.app                                                                  |
-| Video                       | https://youtu.be/Ox6BG9KwP7w (uploaded draft; public verification pending)                                                                 |
+| Video                       | https://youtu.be/Ox6BG9KwP7w (public, with uploaded English captions)                                                                 |
 | Architecture diagram        | `docs/assets/architecture.svg`, or a readable export of that same final diagram              |
 | Public preview architecture | `docs/assets/preview-architecture.svg`, the verified Firebase/Cloud Run/Firestore deployment |
 | Supporting pitch            | `deliverables/SecondCrate-Pitch.pdf`                                                         |
@@ -68,7 +68,7 @@ Resolve each field from an actual runtime result before final submission:
 | AI invocation           | Pending. The hosted preview uses rehearsal interpretation; no successful Bedrock invocation is claimed.                                                                                                                                           |
 | Qualifying CDS call     | Pending. All hosted preview messages are simulated; no successful live CDS send is claimed.                                                                                                                                                       |
 | Delivery claim, if made | No external messages were sent in the hosted smoke test.                                                                                                                                                                                          |
-| Test record             | 115 automated tests and production build passed. Hosted recovery and security evidence: `docs/evidence/firebase-deployment.json`, `docs/evidence/firebase-http-smoke.json` and `docs/evidence/firebase-security-smoke.json`. Zero external sends. |
+| Test record             | 127 automated tests and production build passed. Hosted recovery and security evidence: `docs/evidence/firebase-deployment.json`, `docs/evidence/firebase-http-smoke.json` and `docs/evidence/firebase-security-smoke.json`. Zero external sends. |
 | Judge availability      | Confirm the hosted test path will remain available through 13 November 2026, 06:30 IST, subject to any updated official judging dates                                                                                                             |
 
 Current checkpoint: https://secondcrate.web.app is a verified public rehearsal served by Firebase Hosting, backed by Cloud Run and the named Firestore database `secondcrate` in `europe-west1`. The AWS account remains on its Free plan, with required service access blocked. No paid-plan upgrade was authorised. There is no successful AWS deployment, real message send or Bedrock inference to cite yet.

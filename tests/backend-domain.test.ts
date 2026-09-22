@@ -649,4 +649,163 @@ describe("recovery policy and transactional allocation", () => {
       unitPrice: 16,
     });
   });
+  it("answers a delivery question after confirmation using only the buyer-owned recorded order", async () => {
+    const { service, w } = await setup();
+    await service.launch(w.id, "lot_tomatoes");
+    await service.processInbound(w.id, input());
+    const before = await service.get(w.id);
+    const ownOrder = before.orders[0];
+    const result = await service.processInbound(
+      w.id,
+      input(
+        "buyer_maya",
+        "What is the delivery deadline?",
+        "confirmed-question",
+      ),
+    );
+    expect(result.result.reply).toContain(ownOrder.confirmationCode);
+    expect(result.result.reply).toContain(
+      "12 crates, £204.00 total; confirmed.",
+    );
+    expect(result.result.reply).toContain("Recorded scheduled delivery:");
+    expect(result.result.reply).toMatch(
+      /\d{2} [A-Za-z]+ \d{4} \d{2}:\d{2} London time/,
+    );
+    expect(result.result.reply).toContain("current fulfilment update");
+    expect(
+      result.result.steps.some(
+        (step) => step.tool === "read_order_facts" && step.status === "success",
+      ),
+    ).toBe(true);
+    expect(result.workspace.orders).toEqual(before.orders);
+    expect(result.workspace.lots).toEqual(before.lots);
+    expect(result.workspace.offers).toEqual(before.offers);
+  });
+  it.each(["fully allocated", "closed", "past cutoff", "dispatched"] as const)(
+    "preserves confirmed facts after the lot is %s without reviving offers",
+    async (lifecycle) => {
+      const { service, w, store } = await setup();
+      await service.launch(w.id, "lot_tomatoes");
+      await service.processInbound(w.id, input());
+      if (lifecycle === "fully allocated") {
+        await service.processInbound(
+          w.id,
+          input(
+            "buyer_table",
+            "I will take 20 crates at £18",
+            "later-order-20",
+          ),
+        );
+        await service.processInbound(
+          w.id,
+          input("buyer_union", "I will take 8 crates at £18", "later-order-8"),
+        );
+      }
+      if (lifecycle === "closed") await service.close(w.id, "lot_tomatoes");
+      if (lifecycle === "dispatched")
+        await service.dispatch(w.id, (await service.get(w.id)).orders[0].id);
+      if (lifecycle === "past cutoff") {
+        const current = await service.get(w.id);
+        current.lots[0].dispatchBy = new Date(
+          Date.now() - 60_000,
+        ).toISOString();
+        current.version++;
+        await store.save(current, current.version - 1);
+      }
+      const before = await service.get(w.id);
+      const response = await service.processInbound(
+        w.id,
+        input(
+          "buyer_maya",
+          "What is my order status and delivery time?",
+          "lifecycle-question",
+        ),
+      );
+      expect(response.result.reply).toContain(
+        before.orders[0].confirmationCode,
+      );
+      expect(response.result.reply).toContain(
+        lifecycle === "dispatched"
+          ? "recorded as dispatched by the operator"
+          : "confirmed",
+      );
+      for (const other of before.orders.filter(
+        (order) => order.buyerId !== "buyer_maya",
+      ))
+        expect(response.result.reply).not.toContain(other.confirmationCode);
+      expect(response.workspace.orders).toEqual(before.orders);
+      expect(response.workspace.lots).toEqual(before.lots);
+      expect(response.workspace.offers).toEqual(before.offers);
+      expect(response.result.reply).not.toContain("no active offer");
+    },
+  );
+  it("does not disclose another buyer order or the same buyer order from a different lot", async () => {
+    const { service, w } = await setup();
+    await service.launch(w.id, "lot_tomatoes");
+    await service.processInbound(w.id, input());
+    const first = await service.get(w.id);
+    const code = first.orders[0].confirmationCode;
+    const otherBuyer = await service.processInbound(
+      w.id,
+      input("buyer_table", "What is my order status?", "other-buyer-question"),
+    );
+    expect(otherBuyer.result.reply).not.toContain(code);
+    expect(
+      otherBuyer.result.steps.some((step) => step.tool === "read_order_facts"),
+    ).toBe(false);
+    expect(otherBuyer.workspace.orders).toEqual(first.orders);
+    const {
+      id,
+      reference,
+      available,
+      createdAt,
+      status,
+      unit,
+      source,
+      ...newLot
+    } = first.lots[0];
+    const second = await service.addLot(w.id, {
+      ...newLot,
+      product: "Carrots",
+      quantity: 5,
+    });
+    await service.launch(w.id, second.lot.id);
+    const before = await service.get(w.id);
+    const otherLot = await service.processInbound(w.id, {
+      ...input("buyer_maya", "What is my order status?", "other-lot-question"),
+      lotId: second.lot.id,
+    });
+    expect(otherLot.result.reply).not.toContain(code);
+    expect(
+      otherLot.result.steps.some((step) => step.tool === "read_order_facts"),
+    ).toBe(false);
+    expect(otherLot.workspace.orders).toEqual(before.orders);
+    expect(otherLot.workspace.lots).toEqual(before.lots);
+    expect(otherLot.workspace.offers).toEqual(before.offers);
+  });
+  it("keeps opt-out restrictions in force for post-confirmation questions", async () => {
+    const { service, w } = await setup();
+    await service.launch(w.id, "lot_tomatoes");
+    await service.processInbound(w.id, input());
+    await service.processInbound(
+      w.id,
+      input("buyer_maya", "STOP", "confirmed-opt-out"),
+    );
+    const before = await service.get(w.id);
+    const result = await service.processInbound(
+      w.id,
+      input("buyer_maya", "What is my order status?", "suppressed-question"),
+    );
+    expect(
+      result.result.steps.some(
+        (step) => step.tool === "verify_consent" && step.status === "blocked",
+      ),
+    ).toBe(true);
+    expect(
+      result.result.steps.some((step) => step.tool === "read_order_facts"),
+    ).toBe(false);
+    expect(result.workspace.orders).toEqual(before.orders);
+    expect(result.workspace.lots).toEqual(before.lots);
+    expect(result.workspace.offers).toEqual(before.offers);
+  });
 });

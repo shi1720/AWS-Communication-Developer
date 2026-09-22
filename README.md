@@ -20,7 +20,7 @@ SecondCrate gives that lot a second destination. The operator releases the stock
 
 **Watch the narrated walkthrough:** [2:46 captioned demo](https://secondcrate.web.app/demo.html), using actual hosted application captures. [Download the MP4](deliverables/SecondCrate-Demo.mp4).
 
-**Current verification:** 115 automated tests and the production build pass. The Firebase-hosted release passed the complete HTTP recovery workflow plus session, tenant-isolation and persistence checks. Its API runs on Cloud Run with a dedicated Firestore database. AWS deployment and live Bedrock/CDS verification remain blocked under the current AWS Free plan; no paid-plan upgrade was authorised. See the [hosted deployment evidence](docs/evidence/firebase-deployment.json) and [final review](docs/FINAL_REVIEW.md).
+**Current verification:** 127 automated tests and the production build pass. The Firebase-hosted release passed the complete HTTP recovery workflow plus session, tenant-isolation and persistence checks. Its API runs on Cloud Run with a dedicated Firestore database. AWS deployment and live Bedrock/CDS verification remain blocked under the current AWS Free plan; no paid-plan upgrade was authorised. See the [hosted deployment evidence](docs/evidence/firebase-deployment.json) and [final review](docs/FINAL_REVIEW.md).
 
 Private account creation and password login also work in the hosted preview. Email verification and forgotten-password recovery require SES configuration and are currently unavailable. Use the isolated demo for the complete judge walkthrough.
 

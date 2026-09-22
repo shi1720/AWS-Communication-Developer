@@ -1,0 +1,240 @@
+{
+  "checkedAt": "2026-09-22T09:25:08.117Z",
+  "region": "us-east-1",
+  "profile": "kitproof-bootstrap-process",
+  "readOnly": true,
+  "credentials": {
+    "status": "valid",
+    "principalType": "root"
+  },
+  "checks": {
+    "plan": {
+      "status": "success",
+      "type": "FREE",
+      "planStatus": "NOT_STARTED",
+      "credits": {
+        "amount": 100,
+        "unit": "USD"
+      }
+    },
+    "cloudformation": {
+      "ok": false,
+      "code": "OptInRequired",
+      "message": "aws: [ERROR]: An error occurred (OptInRequired) when calling the DescribeStacks operation: The AWS Access Key Id needs a subscription for the service"
+    },
+    "lambda": {
+      "ok": false,
+      "code": "SubscriptionRequiredException",
+      "message": "aws: [ERROR]: An error occurred (SubscriptionRequiredException) when calling the GetAccountSettings operation: The AWS Access Key Id needs a subscription for the service"
+    },
+    "dynamodb": {
+      "ok": false,
+      "code": "SubscriptionRequiredException",
+      "message": "aws: [ERROR]: An error occurred (SubscriptionRequiredException) when calling the DescribeLimits operation: The AWS Access Key Id needs a subscription for the service"
+    },
+    "sesAccount": {
+      "ok": false,
+      "code": "SubscriptionRequiredException",
+      "message": "aws: [ERROR]: An error occurred (SubscriptionRequiredException) when calling the GetAccount operation: The AWS Access Key Id needs a subscription for the service"
+    },
+    "cdkBootstrap": {
+      "ok": false,
+      "code": "OptInRequired",
+      "message": "aws: [ERROR]: An error occurred (OptInRequired) when calling the DescribeStacks operation: The AWS Access Key Id needs a subscription for the service"
+    },
+    "bedrockModels": {
+      "status": "success",
+      "models": [
+        {
+          "modelId": "amazon.nova-2-lite-v1:0",
+          "status": "ACTIVE",
+          "inferenceTypes": [
+            "INFERENCE_PROFILE"
+          ],
+          "outputModalities": [
+            "TEXT"
+          ]
+        },
+        {
+          "modelId": "amazon.nova-2-lite-v1:0:256k",
+          "status": "ACTIVE",
+          "inferenceTypes": [
+            "PROVISIONED"
+          ],
+          "outputModalities": [
+            "TEXT"
+          ]
+        },
+        {
+          "modelId": "amazon.nova-lite-v1:0:24k",
+          "status": "ACTIVE",
+          "inferenceTypes": [
+            "PROVISIONED"
+          ],
+          "outputModalities": [
+            "TEXT"
+          ]
+        },
+        {
+          "modelId": "amazon.nova-lite-v1:0:300k",
+          "status": "ACTIVE",
+          "inferenceTypes": [
+            "PROVISIONED"
+          ],
+          "outputModalities": [
+            "TEXT"
+          ]
+        },
+        {
+          "modelId": "amazon.nova-lite-v1:0",
+          "status": "ACTIVE",
+          "inferenceTypes": [
+            "ON_DEMAND",
+            "INFERENCE_PROFILE"
+          ],
+          "outputModalities": [
+            "TEXT"
+          ]
+        },
+        {
+          "modelId": "amazon.nova-micro-v1:0:24k",
+          "status": "ACTIVE",
+          "inferenceTypes": [
+            "PROVISIONED"
+          ],
+          "outputModalities": [
+            "TEXT"
+          ]
+        },
+        {
+          "modelId": "amazon.nova-micro-v1:0:128k",
+          "status": "ACTIVE",
+          "inferenceTypes": [
+            "PROVISIONED"
+          ],
+          "outputModalities": [
+            "TEXT"
+          ]
+        },
+        {
+          "modelId": "amazon.nova-micro-v1:0",
+          "status": "ACTIVE",
+          "inferenceTypes": [
+            "ON_DEMAND",
+            "INFERENCE_PROFILE"
+          ],
+          "outputModalities": [
+            "TEXT"
+          ]
+        }
+      ]
+    },
+    "amazon.nova-micro-v1:0": {
+      "status": "success",
+      "modelId": "amazon.nova-micro-v1",
+      "agreementAvailability": {
+        "status": "AVAILABLE"
+      },
+      "authorizationStatus": "NOT_AUTHORIZED",
+      "entitlementAvailability": "AVAILABLE",
+      "regionAvailability": "AVAILABLE"
+    },
+    "amazon.nova-lite-v1:0": {
+      "status": "success",
+      "modelId": "amazon.nova-lite-v1",
+      "agreementAvailability": {
+        "status": "AVAILABLE"
+      },
+      "authorizationStatus": "NOT_AUTHORIZED",
+      "entitlementAvailability": "AVAILABLE",
+      "regionAvailability": "AVAILABLE"
+    },
+    "sesIdentities": {
+      "status": "failed",
+      "code": "SubscriptionRequiredException",
+      "verifiedIdentityCount": "unknown; listing not authorized"
+    }
+  },
+  "mutationsPerformed": false,
+  "conclusion": {
+    "userReportsPaymentVerificationCompleted": true,
+    "awsFreePlanPreserved": true,
+    "serviceAccessAfterUserVerification": "unchanged: required deployment and SES operations still reject access for missing subscription",
+    "bedrock": "Catalog accessible. Both Amazon Nova Micro v1 and Nova Lite v1 report agreement, entitlement and regional availability, but authorizationStatus NOT_AUTHORIZED. No inference invocation was attempted.",
+    "bootstrap": "Could not determine whether CDKToolkit exists because CloudFormation rejects the read before stack lookup.",
+    "nextStep": "Complete any remaining signup confirmation visible in the console and check whether AWS shows verification/activation pending. Payment verification does not yet establish working service subscriptions. Do not upgrade the plan or join APN."
+  },
+  "minimalDeploymentPathAfterServiceActivation": [
+    "Use only us-east-1, preserve FREE and choose per-request services. Confirm CloudFormation, Lambda, DynamoDB and SES reads succeed before creating resources.",
+    "Inspect existing SES identities and select an owned verified sender. If none exists, the owner must verify an address or domain through SES before email can send.",
+    "Use amazon.nova-micro-v1:0 or amazon.nova-lite-v1:0 as a direct on-demand model after authorization becomes AUTHORIZED. Avoid provisioned throughput and cross-region inference profiles for this minimal path. Tool-use behavior still needs one real Converse verification.",
+    "Read CDKToolkit once service access works. Bootstrap only if absent, then deploy the existing SecondCrate stack with BEDROCK_MODEL_ID, verified SES_FROM_EMAIL and LIVE_SENDS_ENABLED=false initially. No SMS origination or WhatsApp onboarding is required for the SES-based qualifying path.",
+    "Perform the repository verification utility against the selected model and AWS SES success mailbox simulator with explicit sender confirmation. Then test hosted auth/storage/recovery and retain provider response IDs as actual runtime evidence. The mailbox simulator is not a real buyer conversation.",
+    "Real inbound email needs a controlled receiving domain and SES receipt/DNS setup; that capability cannot be claimed from a simulator send. Enable live sends only for an owned provisioned workspace with genuine consent."
+  ],
+  "sources": [
+    {
+      "title": "AWS Free plan FAQ",
+      "url": "https://aws.amazon.com/free/free-tier-faqs/"
+    },
+    {
+      "title": "AWS activation and verification",
+      "url": "https://docs.aws.amazon.com/accounts/latest/reference/getting-started.html"
+    },
+    {
+      "title": "Bedrock model availability API",
+      "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModelAvailability.html"
+    },
+    {
+      "title": "Amazon Bedrock pricing",
+      "url": "https://aws.amazon.com/bedrock/pricing/"
+    },
+    {
+      "title": "AWS India supports UPI signup",
+      "url": "https://aws.amazon.com/about-aws/whats-new/2025/11/india-upi-sign-up-automate-monthly-payments/"
+    }
+  ],
+  "registrationResumeRecheck": {
+    "checkedAt": "2026-09-22T09:28:55.490Z",
+    "trigger": "User payment method saved/default and AutoPay enabled observed by parent in AWS console; Complete your AWS registration clicked, then redirected to console without another form.",
+    "readOnly": true,
+    "checks": {
+      "plan": {
+        "status": "success",
+        "type": "FREE",
+        "planStatus": "NOT_STARTED",
+        "credits": {
+          "amount": 100,
+          "unit": "USD"
+        }
+      },
+      "cloudformation": {
+        "status": "failed",
+        "code": "OptInRequired",
+        "message": "aws: [ERROR]: An error occurred (OptInRequired) when calling the DescribeStacks operation: The AWS Access Key Id needs a subscription for the service"
+      },
+      "lambda": {
+        "status": "failed",
+        "code": "SubscriptionRequiredException",
+        "message": "aws: [ERROR]: An error occurred (SubscriptionRequiredException) when calling the GetAccountSettings operation: The AWS Access Key Id needs a subscription for the service"
+      },
+      "sesAccount": {
+        "status": "failed",
+        "code": "SubscriptionRequiredException",
+        "message": "aws: [ERROR]: An error occurred (SubscriptionRequiredException) when calling the GetAccount operation: The AWS Access Key Id needs a subscription for the service"
+      }
+    },
+    "result": "Service subscription restrictions remain. No further automatic rechecks scheduled."
+  },
+  "finalPreflight": {
+    "checkedAt": "2026-09-22T09:47:43.429Z",
+    "command": "node --import tsx scripts/aws-preflight.mjs --region us-east-1 --account-plan",
+    "credentialsValid": true,
+    "readiness": "activation_blocked",
+    "accountPlanType": "FREE",
+    "accountPlanStatus": "NOT_STARTED",
+    "sesErrorCode": "SubscriptionRequiredException",
+    "externalSends": 0,
+    "modelInvocations": 0
+  }
+}

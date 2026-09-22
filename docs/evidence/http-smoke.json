@@ -1,5 +1,5 @@
 {
-  "verifiedAt": "2026-09-22T08:30:26.169Z",
+  "verifiedAt": "2026-09-22T09:46:53.581Z",
   "target": "https://secondcrate.web.app",
   "mode": "isolated-demo",
   "externalMessagesSent": 0,
@@ -18,57 +18,57 @@
     {
       "path": "/auth/demo",
       "status": 200,
-      "latencyMs": 1339
+      "latencyMs": 891
     },
     {
       "path": "/dashboard",
       "status": 200,
-      "latencyMs": 750
+      "latencyMs": 770
     },
     {
       "path": "/lots/lot_tomatoes/launch",
       "status": 200,
-      "latencyMs": 1230
+      "latencyMs": 1038
     },
     {
       "path": "/inbound",
       "status": 200,
-      "latencyMs": 925
+      "latencyMs": 1087
     },
     {
       "path": "/inbound",
       "status": 200,
-      "latencyMs": 901
+      "latencyMs": 1039
     },
     {
       "path": "/inbound",
       "status": 200,
-      "latencyMs": 909
+      "latencyMs": 908
     },
     {
       "path": "/inbound",
       "status": 200,
-      "latencyMs": 763
+      "latencyMs": 982
     },
     {
       "path": "/inbound",
       "status": 200,
-      "latencyMs": 1061
+      "latencyMs": 1672
     },
     {
       "path": "/dashboard",
       "status": 200,
-      "latencyMs": 501
+      "latencyMs": 517
     },
     {
       "path": "/auth/logout",
       "status": 200,
-      "latencyMs": 762
+      "latencyMs": 662
     },
     {
       "path": "/dashboard",
       "status": 401,
-      "latencyMs": 570
+      "latencyMs": 748
     }
   ]
 }

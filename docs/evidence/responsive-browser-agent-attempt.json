@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-09-22",
+  "target": "https://secondcrate.web.app",
+  "status": "blocked_before_page_interaction",
+  "requestedViewports": [
+    {
+      "width": 390,
+      "height": 844
+    },
+    {
+      "width": 1440,
+      "height": 900
+    }
+  ],
+  "reason": "This agent browser inventory exposes only Chrome extension instances. The parent agent in-app browser is not available in this context, and Chrome session initialization rejects API-key authentication.",
+  "newTabsOpened": 0,
+  "viewportModified": false,
+  "existingTabsInteractedWith": false,
+  "responsiveBehaviorVerified": false,
+  "followUp": "Parent agent completed the requested browser viewport and interaction checks. See responsive-browser.json. This earlier failed attempt is not validation evidence."
+}

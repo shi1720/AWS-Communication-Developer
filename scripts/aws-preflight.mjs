@@ -5,7 +5,7 @@ try {
   const options = parseArgs(process.argv.slice(2), false);
   if (options.help) {
     console.log(
-      "Usage: node --import tsx scripts/aws-preflight.mjs [--region REGION]\nRead-only STS and SES checks. Reports configuration flags without credentials, account IDs or sender addresses. Set AWS_PROFILE and AWS_REGION/AWS_DEFAULT_REGION; SES_FROM_EMAIL and BEDROCK_MODEL_ID are optional.",
+      "Usage: node --import tsx scripts/aws-preflight.mjs [--region REGION] [--account-plan]\nRead-only STS and SES checks. --account-plan optionally reads AWS Free Tier GetAccountPlanState through the AWS CLI; SECONDCRATE_PREFLIGHT_ACCOUNT_PLAN=true is equivalent. Reports sanitized activation diagnostics without credentials, account IDs or sender addresses. Exit 0 means valid credentials only, not deployment readiness. Set AWS_PROFILE and AWS_REGION/AWS_DEFAULT_REGION; SES_FROM_EMAIL and BEDROCK_MODEL_ID are optional.",
     );
   } else {
     if (options.region) process.env.AWS_DEFAULT_REGION = options.region;

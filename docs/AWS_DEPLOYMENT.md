@@ -114,7 +114,7 @@ Current boundaries: one routed live workspace per deployment, text-only inbound 
 
 ## Repeatable preflight and live evidence commands
 
-The utilities below use the installed AWS SDK and the same messaging/reasoning adapters as the application. They never print access keys, session tokens, account IDs, sender addresses or raw SDK error messages. Configuration flags describe the current process environment; a false flag does not mean the AWS account has no such resource.
+The utilities below use the installed AWS SDK and the same messaging/reasoning adapters as the application. An optional Free Tier plan diagnostic uses the installed AWS CLI. They never print access keys, session tokens, account IDs, sender addresses or raw SDK/CLI error messages. Configuration flags describe the current process environment; a false flag does not mean the AWS account has no such resource.
 
 Set the authenticated profile and deployment Region. `AWS_DEFAULT_REGION` also reaches any configured `credential_process` child command:
 
@@ -126,6 +126,18 @@ node --import tsx scripts/aws-preflight.mjs --region eu-west-2
 ```
 
 Preflight is read-only: STS `GetCallerIdentity`, SESv2 `GetAccount`, and, if `SES_FROM_EMAIL` is configured, `GetEmailIdentity` for the address and its domain. It reports credential validity, Region, SES sandbox/sending status, sender verification and channel/model configuration flags. Bedrock is **not invoked**. The caller needs the corresponding SES read permissions; a denied read is reported as unknown/unavailable rather than proof of an unverified resource. [SES identity status](https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_GetEmailIdentity.html), [SES account status](https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_GetAccount.html).
+
+**Exit code compatibility:** exit `0` means STS credentials are valid, even when SES is unavailable. It does not mean deployment is ready. Inspect `readiness.status`, `ses.errorCode` and `diagnostics`. The readiness report explicitly records that CloudFormation, Lambda and DynamoDB were not checked. `simulatorSendReady` requires an accessible sending-enabled SES account and a verified configured sender; it does not send anything.
+
+For an account that signs in but returns `SubscriptionRequiredException` or `OptInRequired`, optionally include Free Tier state:
+
+```bash
+node --import tsx scripts/aws-preflight.mjs --region us-east-1 --account-plan
+```
+
+`SECONDCRATE_PREFLIGHT_ACCOUNT_PLAN=true` is equivalent. This adds only the read-only `GetAccountPlanState` call through the AWS CLI and requires `freetier:GetAccountPlanState`. The CLI is bounded by a timeout and receives the same profile and Region environment. The report whitelists plan type, state and remaining credit amount; it omits the account ID and other provider metadata. An unavailable CLI, denied permission or invalid plan response is nonfatal and does not invalidate successful STS/SES checks. Without the option or environment switch, no plan call runs. [Free Tier state API](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_freetier_GetAccountPlanState.html).
+
+`FREE / NOT_STARTED` plus a service-subscription error indicates unresolved activation or service enrollment, not expired sign-in credentials. Check any remaining signup completion, payment verification and customer verification steps in the console. If verification has just completed, allow AWS activation to finish; if the console loops or the restriction persists, request AWS account support diagnosis. This command never calls `UpgradeAccountPlan`, modifies billing or signs up for APN. Joining APN or AWS Organizations can automatically upgrade a Free account, so preserve the operator's plan choice. [AWS activation instructions](https://docs.aws.amazon.com/accounts/latest/reference/getting-started.html), [Free plan constraints](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/free-tier-plans.html).
 
 The recorded [22 September read-only result](evidence/aws-preflight-2026-09-22.json) confirms valid credentials but `SubscriptionRequiredException` from SES in `eu-west-2`. Account/service activation must be resolved before deployment or send verification. This file contains no live send or model evidence.
 

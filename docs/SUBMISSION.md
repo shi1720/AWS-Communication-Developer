@@ -32,7 +32,7 @@ The AWS implementation uses Amazon Bedrock for buyer-intent proposals, Amazon SE
 
 Conditional storage updates protect inventory. Incoming events are deduplicated. Uncertain sends stay visible for reconciliation. Authentication and transaction checks run on the server. Cancellation extraction uses operator-reviewed local rules.
 
-**Current evidence:** the application passed 115 automated tests and its production build. The public rehearsal at [secondcrate.web.app](https://secondcrate.web.app) runs on Firebase Hosting, Cloud Run and a dedicated Firestore database. Nine HTTP recovery checks passed, including concurrent stock claims, persistence and logout; separate hosted checks verified session security and tenant isolation. All outbound messaging remains simulated. AWS account restrictions still block the separate AWS deployment and live Bedrock/CDS verification.
+**Current evidence:** the application passed 127 automated tests and its production build. The public rehearsal at [secondcrate.web.app](https://secondcrate.web.app) runs on Firebase Hosting, Cloud Run and a dedicated Firestore database. Nine HTTP recovery checks passed, including concurrent stock claims, persistence and logout; separate hosted checks verified session security and tenant isolation. All outbound messaging remains simulated. AWS account restrictions still block the separate AWS deployment and live Bedrock/CDS verification.
 
 ## Challenges we ran into
 

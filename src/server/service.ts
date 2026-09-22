@@ -15,7 +15,7 @@ import type {
   WorkspaceStore,
 } from "../shared/types.js";
 import { AppError, ConflictError } from "./errors.js";
-import { buildOfferMessage } from "./offer-message.js";
+import { buildOfferMessage, formatLondonOfferDate } from "./offer-message.js";
 import { createWorkspace, now, uid } from "./seed.js";
 
 const pence = (amount: number) => Math.round(amount * 100);
@@ -630,6 +630,9 @@ export class RecoveryService {
               o.buyerId === buyer.id &&
               ["queued", "unknown", "sent", "negotiating"].includes(o.status),
           );
+        const buyerOrders = workspace.orders.filter(
+          (order) => order.buyerId === buyer.id && order.lotId === lot.id,
+        );
         const block = (tool: string, summary: string) =>
           steps.push({ tool, status: "blocked", summary });
         if (decision.intent === "opt_out") {
@@ -652,6 +655,20 @@ export class RecoveryService {
           reply =
             "Your account is not opted in to these offers. Please contact your wholesaler to update consent.";
           block("verify_consent", "No current consent; no order created.");
+        } else if (decision.intent === "question" && buyerOrders.length > 0) {
+          const facts = buyerOrders
+            .map(
+              (order) =>
+                `${order.confirmationCode}: ${order.quantity} crates, ${money(order.total)} total; ${order.status === "dispatched" ? "recorded as dispatched by the operator" : "confirmed"}.`,
+            )
+            .join("\n");
+          reply = `Your recorded ${buyerOrders.length === 1 ? "order" : "orders"} for ${lot.product} (${lot.reference}):\n${facts}\nRecorded scheduled delivery: ${formatLondonOfferDate(lot.deliveryBy)}. For a current fulfilment update or product questions, contact ${workspace.settings.companyName}.`;
+          steps.push({
+            tool: "read_order_facts",
+            status: "success",
+            summary: `Read ${buyerOrders.length} order${buyerOrders.length === 1 ? "" : "s"} belonging to this buyer and lot. No orders, stock or offer terms changed.`,
+            output: { orderIds: buyerOrders.map((order) => order.id) },
+          });
         } else if (
           staleTerms &&
           ["accept", "negotiate", "decline"].includes(decision.intent)

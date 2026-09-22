@@ -1,0 +1,20 @@
+{
+  "verifiedAt": "2026-09-22T09:48:09.641137+00:00",
+  "target": "https://secondcrate.web.app",
+  "cloudRunRevision": "secondcrate-00003-p98",
+  "mode": "isolated synthetic demo",
+  "buyer": "Olive & Rye",
+  "orderReference": "SC-5AB3552BF3",
+  "request": "What is the delivery deadline for my confirmed order?",
+  "response": "Your recorded order for Cherry tomatoes (NS-1042): SC-5AB3552BF3: 12 crates, \u00a3204.00 total; confirmed. Recorded scheduled delivery: 22 Sept 2026 14:09 London time. For a current fulfilment update or product questions, contact Northstar Produce.",
+  "trace": "Read 1 order belonging to this buyer and lot. No orders, stock or offer terms changed.",
+  "afterReload": {
+    "confirmedOrders": 1,
+    "cratesRecovered": 12,
+    "remainingCrates": 28,
+    "bookedSalesGBP": 204,
+    "successfulQuestionEventVisible": true
+  },
+  "externalMessagesSent": 0,
+  "regressionCoverage": "Seven new automated cases also cover closed, fully allocated, expired-cutoff and dispatched states, consent and buyer/lot isolation."
+}

@@ -1,17 +1,46 @@
 {
-  "checkedAt": "2026-09-22T09:19:00.898453+00:00",
+  "checkedAt": "2026-09-22T09:37:37.554662+00:00",
   "videoId": "Ox6BG9KwP7w",
   "url": "https://youtu.be/Ox6BG9KwP7w",
-  "nativeObservedStatus": "Saved as private; checks complete with no issues",
+  "nativeObservedStatus": "Published successfully in YouTube Studio through the in-app browser",
   "titleSaved": "SecondCrate | Turn cancelled produce orders into confirmed sales",
   "thumbnailUploaded": true,
-  "descriptionVerified": false,
-  "separateSubtitleTrackVerified": false,
-  "publicPublicationVerified": false,
+  "descriptionVerified": true,
+  "separateSubtitleTrackVerified": true,
+  "publicPublicationVerified": true,
   "publicOembed": {
-    "status": 403,
-    "message": "Forbidden"
+    "status": 200,
+    "title": "SecondCrate | Turn cancelled produce orders into confirmed sales",
+    "author": "Shivam Gupta",
+    "authentication": "none"
   },
   "fallbackPublicVideoPage": "https://secondcrate.web.app/demo.html",
-  "browserControlBlocker": "YouTube Studio caused blank or stale accessibility surfaces in Chrome and Safari. Browser connector also reports unsupported Codex auth method: apikey."
+  "browserControlBlocker": null,
+  "status": "public",
+  "playback": {
+    "watchPage": "https://www.youtube.com/watch?v=Ox6BG9KwP7w",
+    "advancedFromSeconds": 0,
+    "advancedToSeconds": 9,
+    "quality": "Auto (1080p HD)",
+    "captionTrack": "English",
+    "visualFrameVerified": true,
+    "signedOutPlaybackTested": false
+  },
+  "disclosure": {
+    "aiUsed": true,
+    "voice": "OpenAI cedar",
+    "paidPromotion": false,
+    "madeForKids": false
+  },
+  "captions": {
+    "file": "deliverables/SecondCrate-Demo.srt",
+    "cueCount": 45,
+    "savedMessage": "English subtitles published"
+  },
+  "notes": [
+    "The narration and description explicitly disclose simulated messaging, Firebase runtime, and pending AWS deployment.",
+    "Anonymous oEmbed returned the correct public video metadata. Watch playback was verified while signed in."
+  ],
+  "descriptionReverifiedAt": "2026-09-22T09:48:09.641137+00:00",
+  "descriptionTestCount": 127
 }

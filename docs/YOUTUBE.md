@@ -19,7 +19,7 @@ The result: three synthetic orders, 40 crates allocated and £708 in booked sale
 Try the app: https://secondcrate.web.app
 Source code and setup: https://github.com/shi1720/AWS-Communication-Developer
 
-The public rehearsal runs on Firebase Hosting, Cloud Run and a dedicated Firestore database. It passed nine HTTP recovery checks plus hosted session-security and tenant-isolation checks. All messages are visibly simulated. The application also passed 115 automated tests and its production build.
+The public rehearsal runs on Firebase Hosting, Cloud Run and a dedicated Firestore database. It passed nine HTTP recovery checks plus hosted session-security and tenant-isolation checks. All messages are visibly simulated. The application also passed 127 automated tests and its production build.
 
 AWS integrations are implemented, but required AWS service access remains blocked. The AWS deployment and live Bedrock/CDS verification are still pending. This public rehearsal does not yet satisfy the hackathon's AWS runtime requirements.
 
