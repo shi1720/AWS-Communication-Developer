@@ -6,6 +6,7 @@ Checkpoint: 22 September 2026. This file separates reproducible local evidence f
 | --- | --- |
 | Product | Complete local recovery workflow, isolated demo and private-account flows implemented |
 | Tests | 100 automated tests passed, TypeScript passed, production build passed |
+| Independent CI | GitHub Actions passed on Linux, including all 100 tests, the compiled-server HTTP workflow, CDK synthesis and a dependency audit with zero vulnerabilities ([initial run](https://github.com/shi1720/AWS-Communication-Developer/actions/runs/35702122265)) |
 | HTTP end to end | Nine checks passed against both the development proxy and compiled server: 40 crates, three orders, £708, duplicate replay, concurrent final-stock requests and revoked logout |
 | Infrastructure | Production frontend and CDK CloudFormation synthesis passed; actual stack not created |
 | AWS authentication | Repaired using a fresh Safari AWS session and CLI callback |
