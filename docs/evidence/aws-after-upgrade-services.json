@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-09-22T10:06:55.883201+00:00",
+  "region": "us-east-1",
+  "readOnly": true,
+  "checks": {
+    "cloudformation": {
+      "accessible": false,
+      "errorCode": "OptInRequired"
+    },
+    "lambda": {
+      "accessible": false,
+      "errorCode": "SubscriptionRequiredException"
+    },
+    "dynamodb": {
+      "accessible": false,
+      "errorCode": "SubscriptionRequiredException"
+    },
+    "ses": {
+      "accessible": false,
+      "errorCode": "SubscriptionRequiredException"
+    },
+    "novaMicro": {
+      "accessible": true,
+      "authorizationStatus": "NOT_AUTHORIZED"
+    },
+    "partnerCentral": {
+      "accessible": true,
+      "partnerCount": 0
+    }
+  },
+  "externalMessagesSent": 0,
+  "modelInvocations": 0,
+  "upgrade": {
+    "ownerExplicitlyAuthorised": true,
+    "permanentPlanChangeDisclosed": true,
+    "consoleConfirmedSuccess": true,
+    "accountPlan": "PAID",
+    "accountPlanStatus": "NOT_STARTED",
+    "remainingCredits": {
+      "amount": 100,
+      "unit": "USD"
+    },
+    "latestPlanAndSesCheckAt": "2026-09-22T10:10:05.443Z",
+    "latestSesErrorCode": "SubscriptionRequiredException",
+    "registrationResumeResult": "Returns to Console Home without an outstanding form",
+    "serviceConsoleResult": "Lambda redirects to Complete your account setup; provider page allows up to 24 hours for activation"
+  },
+  "verification": {
+    "command": "npm run check",
+    "testFilesPassed": 13,
+    "testsPassed": 128,
+    "typecheckPassed": true,
+    "productionBuildPassed": true,
+    "applicationBundlesUnchanged": true
+  }
+}

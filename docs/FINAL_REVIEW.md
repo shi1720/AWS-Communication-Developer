@@ -4,11 +4,11 @@ Reviewed 22 September 2026 against the supplied hackathon rubric. This is an ind
 
 ## Decision
 
-SecondCrate is a working hosted rehearsal with a focused commercial use case and meaningful transaction safeguards. It is **not yet an eligible completed AWS submission**: the public deployment runs on Google Cloud, reasoning and messaging are simulated, and successful AWS model/CDS operations remain unverified. The user has explicitly retained the AWS Free plan; this review does not authorise a paid-plan upgrade.
+SecondCrate is a working hosted rehearsal with a focused commercial use case and meaningful transaction safeguards. It is **not yet an eligible completed AWS submission**: the public deployment runs on Google Cloud, reasoning and messaging are simulated, and successful AWS model/CDS operations remain unverified. The owner subsequently authorised the permanent Paid-plan upgrade. AWS confirmed the upgrade, but service activation remains blocked. Paid plan status alone does not verify deployment.
 
 ## Evidence reviewed
 
-- [Deployment record](evidence/firebase-deployment.json): 127 passing automated tests, production and cloud builds, Firebase Hosting, Cloud Run and the named Firestore database.
+- [Deployment record](evidence/firebase-deployment.json): the 127-test application release, production and cloud builds, Firebase Hosting, Cloud Run and the named Firestore database. The repository now passes 128 tests after adding a regression for Paid accounts with unresolved service activation; no application bundle changed.
 - [Hosted recovery test](evidence/firebase-http-smoke.json): nine checks, including duplicate replay, simultaneous final-stock claims, persisted 40 crates/three orders/£708 and logout revocation. Zero external messages.
 - [Hosted security test](evidence/firebase-security-smoke.json): isolated workspaces, rejected cross-origin writes and forged sessions, durable private login, and blocked unconfigured live sending.
 - [Finished demonstration](https://secondcrate.web.app/demo.html): a 2:46 edited walkthrough of actual hosted-application captures, with disclosed OpenAI cedar narration and 45 burned-in caption cues. The [video verification record](../deliverables/SecondCrate-Video-Verification.json) records the full decode, source checksums and visual/audio review results. The hosted watch page is reachable. The video is now also [public on YouTube](https://youtu.be/Ox6BG9KwP7w), with verified description, uploaded English captions, 1080p playback and anonymous oEmbed access.

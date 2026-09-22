@@ -190,9 +190,15 @@ function addActivationDiagnostics(report: PreflightReport) {
     diagnostics.push({
       code: "AWS_ACTIVATION_PENDING",
       summary:
-        "Authentication succeeded, but SES rejects access because the account lacks a service subscription. This is not a sender-verification result or proof that a Paid plan is required.",
+        report.accountPlan?.type === "PAID"
+          ? "Authentication succeeded and AWS reports the Paid plan, but SES still rejects access because the account lacks a service subscription. Paid plan status does not establish service activation."
+          : "Authentication succeeded, but SES rejects access because the account lacks a service subscription. This is not a sender-verification result or proof that a Paid plan is required.",
       nextSteps: [
-        "Keep the chosen Free plan. Check any remaining Complete your AWS registration step and payment/customer verification status in the AWS console.",
+        report.accountPlan?.type === "FREE"
+          ? "Keep the chosen Free plan. Check any remaining Complete your AWS registration step and payment/customer verification status in the AWS console."
+          : report.accountPlan?.type === "PAID"
+            ? "The account already uses the Paid plan. Check any remaining Complete your AWS registration step and payment/customer verification status in the AWS console; another plan change is not an activation repair."
+            : "Keep the chosen account plan. Check any remaining Complete your AWS registration step and payment/customer verification status in the AWS console; this check did not determine the plan type.",
         "If verification was just completed, allow AWS activation to finish. If the console loops or the restriction persists, ask AWS account support to diagnose service enrollment.",
         "Before deployment, confirm CloudFormation, Lambda and DynamoDB access separately; this preflight does not check those services.",
       ],

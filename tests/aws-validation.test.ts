@@ -116,10 +116,48 @@ describe("AWS preflight and explicit verification CLI", () => {
       "AWS_ACTIVATION_PENDING",
       "FREE_PLAN_NOT_STARTED",
     ]);
+    expect(report.diagnostics?.[0].nextSteps.join(" ")).toContain(
+      "Keep the chosen Free plan",
+    );
     expect(mocks.accountPlan).toHaveBeenCalledExactlyOnceWith("eu-west-2", env);
     expect(JSON.stringify(report)).not.toMatch(
       /123456789012|private-operator|unexpectedPrivateField/,
     );
+    expect(mocks.messaging.send).not.toHaveBeenCalled();
+    expect(mocks.reasoning.decide).not.toHaveBeenCalled();
+  });
+  it("diagnoses blocked PAID accounts without recommending the Free plan or another upgrade", async () => {
+    const mocks = dependencies();
+    mocks.ses.send.mockRejectedValue(
+      Object.assign(new Error("service subscription unavailable"), {
+        name: "SubscriptionRequiredException",
+      }),
+    );
+    mocks.accountPlan.mockResolvedValue({
+      accountPlanType: "PAID",
+      accountPlanStatus: "NOT_STARTED",
+    });
+    const report = await runPreflight({
+      env,
+      dependencies: mocks,
+      checkAccountPlan: true,
+    });
+    expect(report.credentials.valid).toBe(true);
+    expect(report.readiness.status).toBe("activation_blocked");
+    expect(report.accountPlan).toMatchObject({
+      type: "PAID",
+      status: "NOT_STARTED",
+    });
+    expect(report.diagnostics?.map((diagnostic) => diagnostic.code)).toEqual([
+      "AWS_ACTIVATION_PENDING",
+    ]);
+    const guidance = JSON.stringify(report.diagnostics);
+    expect(guidance).toContain("The account already uses the Paid plan");
+    expect(guidance).toContain(
+      "another plan change is not an activation repair",
+    );
+    expect(guidance).not.toContain("Keep the chosen Free plan");
+    expect(mocks.accountPlan).toHaveBeenCalledTimes(1);
     expect(mocks.messaging.send).not.toHaveBeenCalled();
     expect(mocks.reasoning.decide).not.toHaveBeenCalled();
   });
@@ -132,6 +170,9 @@ describe("AWS preflight and explicit verification CLI", () => {
     expect(report.readiness.status).toBe("activation_blocked");
     expect(report.accountPlan).toBeUndefined();
     expect(report.diagnostics?.[0].nextSteps.join(" ")).toContain(
+      "this check did not determine the plan type",
+    );
+    expect(JSON.stringify(report.diagnostics)).not.toContain(
       "Keep the chosen Free plan",
     );
     expect(mocks.accountPlan).not.toHaveBeenCalled();
