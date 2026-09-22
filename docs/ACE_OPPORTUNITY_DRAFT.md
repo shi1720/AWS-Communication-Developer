@@ -8,7 +8,7 @@ The [hackathon FAQ](https://aws-cds-partner.devpost.com/details/faq) allows entr
 
 | Field or prompt | Draft value |
 |---|---|
-| Opportunity/project title | SecondCrate — conversational recovery of cancelled wholesale produce orders |
+| Opportunity/project title | SecondCrate  -  conversational recovery of cancelled wholesale produce orders |
 | Partner organisation | **Required: actual APN-registered organisation name** |
 | Authorised opportunity owner | **Required: actual partner user; Shivam Gupta only if authorised** |
 | Customer | **No customer identified. Use the accurate early-stage/no-customer route permitted by the hackathon guidance and current form. Do not invent a legal entity.** |
@@ -23,7 +23,7 @@ The [hackathon FAQ](https://aws-cds-partner.devpost.com/details/faq) allows entr
 | AWS consumption estimate | **Pending actual deployment/model/messaging measurements. Enter the required currency and billing period only after calculating a documented estimate.** |
 | Estimated launch/close date | **Pending actual customer or pilot plan; no invented commitment** |
 | Assistance requested | Technical validation of CDS setup; introductions to relevant food-distribution customers; feedback on packaging for a future AWS Marketplace offering |
-| Marketing campaign | **AWS CDS Agentic AI Hackathon -Sept. 2026.** |
+| Marketing campaign | **AWS CDS Agentic AI Hackathon -Sept. 2026** |
 | Solution/repository | https://github.com/shi1720/AWS-Communication-Developer |
 
 ## Accurate AWS product selection

@@ -1,0 +1,14 @@
+.git
+.gitignore
+node_modules
+dist
+dist-server
+.env
+.env.*
+.data
+.artifacts-build
+docs/private
+deliverables
+cdk.out
+*.log
+coverage

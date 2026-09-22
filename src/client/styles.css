@@ -599,6 +599,23 @@ em {
   position: fixed;
   inset: 0 auto 0 0;
   z-index: 20;
+  overflow-y: auto;
+}
+.navigation-close,
+.navigation-backdrop {
+  display: none;
+}
+.lot-fields {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.form-timezone-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
 }
 .sidebar .brand {
   padding-left: 3px;
@@ -2518,13 +2535,11 @@ td small {
   position: fixed;
   inset: 0;
   background: #20332166;
-  backdrop-filter: blur(5px);
   z-index: 80;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 25px;
-  animation: fadein 0.15s;
 }
 .modal {
   width: 530px;
@@ -3561,8 +3576,25 @@ td small {
   }
   .sidebar.open {
     display: flex;
-    box-shadow: 0 0 0 100vw #26392055;
-    width: 220px;
+    width: min(280px, calc(100vw - 48px));
+  }
+  .navigation-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 19;
+    border: 0;
+    background: #26392077;
+  }
+  .navigation-close {
+    display: flex;
+    position: absolute;
+    top: 13px;
+    right: 10px;
+  }
+  .sidebar.open .brand {
+    padding-right: 28px;
+    font-size: 22px;
   }
   .main-shell {
     margin-left: 0;

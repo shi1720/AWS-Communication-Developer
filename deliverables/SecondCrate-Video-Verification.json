@@ -1,0 +1,143 @@
+{
+  "file": "SecondCrate-Demo.mp4",
+  "cut": "rehearsal",
+  "duration": 165.921333,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "fps": 30,
+  "captions": 45,
+  "burnedCaptions": true,
+  "disclosure": "AI narration: OpenAI cedar",
+  "presentation": "Edited walkthrough using actual application screenshots; not continuous screen recording",
+  "captureMethod": "Actual Safari screenshots of https://secondcrate.web.app captured through the computer-use tool",
+  "syntheticData": true,
+  "recordingLot": "SC-1045",
+  "sources": [
+    {
+      "file": "01-login.png",
+      "sha256": "faa4d5b111c54418267a3a43dfb5745492819ccc24a6bdfc304c0917c6263680"
+    },
+    {
+      "file": "02-intake-review.png",
+      "sha256": "85ad5afd1bd31c1bede0e1996727cee4310d9b51942e95c0d0216bb709d6b9a1"
+    },
+    {
+      "file": "02-intake.png",
+      "sha256": "38565d93397923148c147f2f943b907b30e4148b94dfc2ae1e62e1799ecd1fa7"
+    },
+    {
+      "file": "02-lot.png",
+      "sha256": "6f376fc13c18efed73eafdf6e267fa93a2225e327141ad0daf10fb48edac2d43"
+    },
+    {
+      "file": "03-conversations.png",
+      "sha256": "8663c11e1f0f9071eec3d2f20a8d405d259e75615571e5cb62829622dd85a486"
+    },
+    {
+      "file": "03-matches.png",
+      "sha256": "97ad0bf3d7c67ee9587e45e4ff922cd6c3e94e7855ea26868e4b586ad7e78c74"
+    },
+    {
+      "file": "03-network.png",
+      "sha256": "4a570075294c98d57b048a25d7a73429f216ff5651afb91634445212625e07c9"
+    },
+    {
+      "file": "04-floor.png",
+      "sha256": "ec4bc90803057e4178711d4e2e54561f048486ae09a26359874453518247f7a5"
+    },
+    {
+      "file": "04-maya.png",
+      "sha256": "eeef44244442568b9fe6107097deb9db6c99d0a186de63ef2b6453658671ea56"
+    },
+    {
+      "file": "05-eight-left.png",
+      "sha256": "9ef33c18e5835f843b36a72f7e32ed0ca4ea3e09ff113e7fe82f65cb25e0dc6d"
+    },
+    {
+      "file": "05-race-before.png",
+      "sha256": "21bb552c2cf9c25e612cf8d47d66ab42a32938cf8b84bef964b3e139f6d2f26a"
+    },
+    {
+      "file": "05-race.png",
+      "sha256": "da2142656f86f3e7ce6a2123e1235776f31923d75bd0716e24a85acf2abecdd9"
+    },
+    {
+      "file": "05-refresh.png",
+      "sha256": "d33859c0a4e9a9da4d0cfc204fa4972d82bd3b41889f87c7e4eb8c9524af2324"
+    },
+    {
+      "file": "06-impact.png",
+      "sha256": "192c2e2f4da17d671edd46e732978ef71635fe9b12093513cbb8c8ff73d64a2c"
+    },
+    {
+      "file": "06-ledger.png",
+      "sha256": "d33859c0a4e9a9da4d0cfc204fa4972d82bd3b41889f87c7e4eb8c9524af2324"
+    },
+    {
+      "file": "07-runtime.png",
+      "sha256": "389781da8a7947f2bf9405e1909688449058814b66ac682c3c1a49cc149f79a6"
+    }
+  ],
+  "sceneStarts": [
+    {
+      "id": "01",
+      "start": 0.0,
+      "duration": 19.1
+    },
+    {
+      "id": "02",
+      "start": 19.1,
+      "duration": 21.166666666666668
+    },
+    {
+      "id": "03",
+      "start": 40.266666666666666,
+      "duration": 17.666666666666668
+    },
+    {
+      "id": "04",
+      "start": 57.93333333333334,
+      "duration": 20.533333333333335
+    },
+    {
+      "id": "05",
+      "start": 78.46666666666667,
+      "duration": 22.7
+    },
+    {
+      "id": "06",
+      "start": 101.16666666666667,
+      "duration": 18.2
+    },
+    {
+      "id": "07",
+      "start": 119.36666666666667,
+      "duration": 23.966666666666665
+    },
+    {
+      "id": "08",
+      "start": 143.33333333333334,
+      "duration": 22.5
+    }
+  ],
+  "captionCorrections": {},
+  "sha256": "fa2e197529b3f38ac7984e4103f1e70a528f5df9c79a963c5c3ba30f117e82ef",
+  "manualAudioAndVisualReviewRequired": false,
+  "audioSampleRate": 48000,
+  "fileBytes": 6398064,
+  "technicalQA": {
+    "fullVideoDecode": "Passed",
+    "integratedLoudnessLUFS": -16.3,
+    "truePeakDBFS": -1.4,
+    "clippingDetected": false,
+    "transcriptReview": "All eight raw Whisper transcripts match the frozen script, including Ben in scene05; no word corrections",
+    "closingHoldSeconds": 4.35,
+    "visualReview": "All20 final encoded shot states extracted and visually inspected after scene05 regeneration"
+  },
+  "automatedAudioReviewFile": "docs/evidence/video-audio-review.json",
+  "audioInputReviewPending": false,
+  "directHumanListeningVerified": false,
+  "audioInputReviewSummary": "gpt-audio-1.5 confirmed Ben, complete sentences and the financial figures, and recommended publication. Prosody ratings are subjective; timestamped comments were not treated as verified defects."
+}

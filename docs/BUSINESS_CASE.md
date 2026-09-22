@@ -14,15 +14,15 @@ The value proposition is specific: **reach suitable buyers, understand condition
 
 Northstar Produce is a fictional London distributor. Its example lot contains 40 crates of cherry tomatoes, 5 kg each. Original price is £24/crate, proposed recovery price £18, minimum permitted price £16, and book cost £12.
 
-| Illustrative outcome | Calculation | Result |
-|---|---|---:|
-| Original order value | 40 × £24 | £960 |
-| Recovered sales if all sell at £18 | 40 × £18 | £720 |
-| Book cost of those goods | 40 × £12 | £480 |
-| Spread before fulfillment and software | £720 − £480 | £240 |
-| Illustrative extra handling/delivery | 40 × £1 | £40 |
-| Subscription allocated across 25 workflows | £299 ÷ 25 | £11.96 |
-| Contribution after those costs | £240 − £40 − £11.96 | £188.04 |
+| Illustrative outcome                       | Calculation         |  Result |
+| ------------------------------------------ | ------------------- | ------: |
+| Original order value                       | 40 × £24            |    £960 |
+| Recovered sales if all sell at £18         | 40 × £18            |    £720 |
+| Book cost of those goods                   | 40 × £12            |    £480 |
+| Spread before fulfillment and software     | £720 − £480         |    £240 |
+| Illustrative extra handling/delivery       | 40 × £1             |     £40 |
+| Subscription allocated across 25 workflows | £299 ÷ 25           |  £11.96 |
+| Contribution after those costs             | £240 − £40 − £11.96 | £188.04 |
 
 The £720 is sales booked, not profit or cash collected. The 200 kg is allocated stock, not verified avoided waste. The £188.04 is not automatically incremental: a coordinator might have sold some stock anyway, an alternate buyer might pay more, and unsold goods may have salvage value.
 
@@ -37,10 +37,10 @@ For a monthly subscription to break even solely from additional crates sold, ass
 Sensitivity for 25 workflows/month:
 
 | Contribution per additional crate, before subscription | Additional crates needed to cover £299 | Approximate additional crates/workflow |
-|---:|---:|---:|
-| £2 | 150 | 6 |
-| £5 | 60 | 3 |
-| £8 | 38 | 2 |
+| -----------------------------------------------------: | -------------------------------------: | -------------------------------------: |
+|                                                     £2 |                                    150 |                                      6 |
+|                                                     £5 |                                     60 |                                      3 |
+|                                                     £8 |                                     38 |                                      2 |
 
 These are arithmetic thresholds, not expected outcomes. Low-volume depots, expensive extra delivery legs and buyers waiting for discounts can make SecondCrate uneconomic. Qualification should exclude those cases until the product changes.
 
@@ -48,16 +48,16 @@ These are arithmetic thresholds, not expected outcomes. Low-volume depots, expen
 
 Test a £299 plan with 25 released lots/month, a maximum of 30 initial recipients per lot, and explicit messaging limits. Offer no unlimited bulk messaging. Quote excess usage separately once measured; do not disguise provider fees. The product should expose cost and failure telemetry to the operator. This is a proposed commercial plan; subscription billing, metered pricing and per-plan quota enforcement are not implemented.
 
-The table uses **all-in technology cost per lot**—model inference, application requests and messaging—plus shared infrastructure and variable support. These GBP ranges are planning assumptions, not current provider prices or a currency conversion.
+The table uses **all-in technology cost per lot** - model inference, application requests and messaging - plus shared infrastructure and variable support. These GBP ranges are planning assumptions, not current provider prices or a currency conversion.
 
-| Monthly sensitivity, 25 lots | Efficient | Base | Expensive |
-|---|---:|---:|---:|
-| Technology per lot | £0.50 | £2.00 | £5.00 |
-| Lot technology total | £12.50 | £50.00 | £125.00 |
-| Shared infrastructure allocation | £10.00 | £10.00 | £15.00 |
-| Support, valued at £35/hour | 0.5 h / £17.50 | 1 h / £35.00 | 2 h / £70.00 |
-| Revenue less these direct costs | £259.00 | £204.00 | £89.00 |
-| Direct contribution margin | 86.6% | 68.2% | 29.8% |
+| Monthly sensitivity, 25 lots     |      Efficient |         Base |    Expensive |
+| -------------------------------- | -------------: | -----------: | -----------: |
+| Technology per lot               |          £0.50 |        £2.00 |        £5.00 |
+| Lot technology total             |         £12.50 |       £50.00 |      £125.00 |
+| Shared infrastructure allocation |         £10.00 |       £10.00 |       £15.00 |
+| Support, valued at £35/hour      | 0.5 h / £17.50 | 1 h / £35.00 | 2 h / £70.00 |
+| Revenue less these direct costs  |        £259.00 |      £204.00 |       £89.00 |
+| Direct contribution margin       |          86.6% |        68.2% |        29.8% |
 
 Engineering, sales, founder time beyond support, legal work, tax and acquisition costs are excluded. This is not net profit. Under the base case, a £600 acquisition cost takes roughly three months of direct contribution to recover, before churn. Four hours of onboarding valued at £35/hour adds £140; charge for complex integrations or simplify onboarding before scaling.
 
@@ -65,14 +65,16 @@ The current DynamoDB implementation rewrites a bounded workspace snapshot for ea
 
 Use actual [AWS EUM](https://aws.amazon.com/end-user-messaging/pricing/) and [SES](https://aws.amazon.com/ses/pricing/) bills during a pilot. Enforce per-tenant caps, bounded recipient counts and model token limits; avoid repeated full-history prompts. No claim is made that the $50 hackathon credit funds an indefinite production service.
 
+The public rehearsal currently runs on Firebase Hosting, Cloud Run and a dedicated Firestore database. That named database is billable. Its hosting and storage charges must be measured separately from the intended AWS pilot economics; the preview does not establish the cost of live model inference or outbound messaging. Public admission limits and maximum instances reduce some exposure but are not a hard bill limit.
+
 ## Fair competitive positioning
 
-| Alternative | Why a customer might choose it | What SecondCrate must prove |
-|---|---|---|
-| Coordinator using phone/WhatsApp/spreadsheet | Trusted relationships, nuanced judgment, no new subscription | Less manual effort and better incremental outcomes without over-contacting buyers |
-| Choco | Established multichannel order capture, ERP integrations and sales tools | A useful cancelled-lot exception workflow, or a complementary integration rather than a replacement |
-| Too Good To Go Parcels | Existing consumer distribution for manufacturer/wholesaler surplus | Value from established B2B buyers, existing routes and exact operational constraints |
-| Existing ERP/CRM automation | Inventory already lives there | Faster deployment and safe write-back; no divergent stock ledger |
+| Alternative                                  | Why a customer might choose it                                           | What SecondCrate must prove                                                                         |
+| -------------------------------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| Coordinator using phone/WhatsApp/spreadsheet | Trusted relationships, nuanced judgment, no new subscription             | Less manual effort and better incremental outcomes without over-contacting buyers                   |
+| Choco                                        | Established multichannel order capture, ERP integrations and sales tools | A useful cancelled-lot exception workflow, or a complementary integration rather than a replacement |
+| Too Good To Go Parcels                       | Existing consumer distribution for manufacturer/wholesaler surplus       | Value from established B2B buyers, existing routes and exact operational constraints                |
+| Existing ERP/CRM automation                  | Inventory already lives there                                            | Faster deployment and safe write-back; no divergent stock ledger                                    |
 
 Sources and boundaries are in [RESEARCH.md](RESEARCH.md). No competitor's inability to build a similar feature is assumed.
 

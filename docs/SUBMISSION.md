@@ -1,82 +1,62 @@
-# SecondCrate — submission copy
+# SecondCrate
 
-Prepared for **Shivam Gupta**, project creator. Last editorial review: **22 September 2026**.
+**Turn cancelled produce orders into confirmed sales before the truck leaves.**
 
-This is a release draft. Resolve the status fields below against the running application and its test report before submitting. A working local rehearsal is not evidence of AWS deployment or live message delivery. Keep the verification block out of the public project narrative once it has been completed.
+Created by **Shivam Gupta** for the AWS Communication Developer Services Agentic AI Partner Hackathon.
 
-## Required links and evidence
-
-| Field | Release value |
-|---|---|
-| Project name | SecondCrate |
-| Tagline | A second destination for cancelled wholesale orders. |
-| Creator | Shivam Gupta |
-| Repository | https://github.com/shi1720/AWS-Communication-Developer |
-| Deployed application | **PENDING: insert verified HTTPS URL** |
-| Architecture | [Source diagram](assets/architecture.svg); deployable architecture, cloud validation pending |
-| Public demonstration video | **PENDING: YouTube or Vimeo URL** |
-| Judge access | **PENDING: tested access instructions; provide restricted judge credentials privately if needed** |
-| AWS Partner organisation | **PENDING: actual registered organisation** |
-| ACE opportunity ID | **PENDING: actual ID returned by Partner Central** |
-| Implementation checkpoint and tests | Git tag `implementation-checkpoint-2026-09-22`; [100 passing tests, build, synthesis and HTTP evidence](evidence/release-verification.json). Final cloud release remains pending. |
-| Live AWS CDS evidence | **PENDING: successful SES/EUM operation and redacted provider receipt** |
-| AI runtime evidence | **PENDING: actual model/region and successful inference trace** |
-| WhatsApp award eligibility | **PENDING: verify real EUM Social usage before selecting this category** |
+The seven sections below are the Project Story. Submission links, testing instructions and outstanding entrant fields are in [DEVPOST_FIELDS.md](DEVPOST_FIELDS.md). The public rehearsal is live at [secondcrate.web.app](https://secondcrate.web.app). Its Firebase hosting is separate from the intended AWS deployment.
 
 ## Inspiration
 
-A restaurant cancels an order. The produce is already at the depot, the delivery cutoff is approaching, and the coordinator starts calling around. A notification tells someone there is a problem. Recovering the order means finding a buyer, understanding their conditions and making a promise the depot can keep.
+A restaurant cancels forty crates of tomatoes. The produce is already at the depot. The delivery truck leaves soon. Someone now has to find another buyer, agree a price and make sure the depot can keep its promise.
 
-SecondCrate focuses on that moment. It gives cancelled wholesale stock a second destination through buyers the distributor already knows. The demonstration follows fictional London wholesaler Northstar Produce and forty crates of cherry tomatoes.
+The work happens in the replies: “I can take twelve, if you can deliver before two.” Recovering the order means understanding that condition and acting on it correctly.
+
+SecondCrate gives cancelled orders a second destination through a distributor's existing buyer relationships, with one clear outcome: book suitable replacement orders before dispatch closes.
 
 ## What it does
 
-An operator creates a recovery lot from a cancellation, verifies the stock, sets the offer and minimum price, and confirms the dispatch and delivery limits. SecondCrate checks buyer preferences, consent and capacity before preparing offers.
+An operator reviews a cancellation, releases the stock, and sets the quantity, offer price, minimum price and delivery window. SecondCrate checks buyer preferences, contact permission, capacity and delivery constraints before preparing offers.
 
-A buyer can answer naturally: “Twelve crates at seventeen pounds, if you can deliver before two.” The agent interprets the request. Application rules then check the quantity, minimum price, delivery constraint and remaining stock before confirming an order. Rejected conditions remain visible, and the operator can inspect what happened.
+Buyers respond conversationally across the implemented WhatsApp, SMS and email paths. Language interpretation proposes an action; application rules decide whether it is allowed. Below-floor prices and impossible delivery conditions are rejected. Two buyers cannot both receive the final crates.
 
-Inventory is shared across channels. Two people claiming the final eight crates cannot both receive a valid confirmation. Orders, conversations and audit events stay connected, and the operator can record dispatch and export the order ledger or a workspace archive. Buyer records include an editable contact-permission source. Incoming cancellation sources require operator review; unknown send outcomes require a recorded provider check before reconciliation. Reconciliation records the operator’s report and never resends the message.
+Conversations, inventory, orders and audit events stay connected. The operator can edit buyers, record dispatch and export orders. Rehearsal messages are labelled simulated; provider acceptance and delivery are separate states.
 
-The demonstration uses synthetic data. Its dispatch clock is an operational deadline; SecondCrate does not determine food safety or certify stock condition. Booked sales and allocated kilograms are displayed as such, without claiming cash collected or verified waste prevented.
+Our fictional Northstar Produce scenario turns forty crates into three orders worth **£708 in booked sales**, with **£228 above book cost** before handling, delivery and software. These are reproducible demonstration figures, not customer results, collected cash or measured food waste prevented.
 
-## How it is built
+## How we built it
 
-SecondCrate uses a TypeScript web application and a server API with authenticated workspaces. The design separates language interpretation from the code that authorises a transaction. AI output is a proposal: it cannot override price, inventory, buyer or delivery checks.
+We built a TypeScript application with React, Fastify and authenticated workspaces. Shivam Gupta set the product direction, commercial requirements and presentation goals. Development used AI coding assistance for implementation, research and testing.
 
-Cancellation field extraction currently uses local rules with operator review. The AWS integration path uses Amazon Bedrock for interpretation and qualifying AWS Communication Developer Services for messaging. Amazon SES handles email through its SDK; AWS End User Messaging Social and SMS adapters provide the additional channel paths. Runtime configuration distinguishes rehearsal from live integrations, and provider errors remain visible.
+The AWS implementation uses Amazon Bedrock for buyer-intent proposals, Amazon SES for email, AWS End User Messaging Social for WhatsApp and AWS End User Messaging for SMS. AWS CDK defines CloudFront, private S3 hosting, API Gateway, Lambda, DynamoDB, queues and monitoring.
 
-**Replace this paragraph with verified deployment details:** The submitted release runs at **[URL]** in **[AWS region]**, using **[actual infrastructure and model]**. We verified **[specific CDS channels]** with **[redacted evidence]**. **[Any remaining simulated channels]** are explicitly marked simulated. **Do not publish this paragraph with blanks or claim AgentCore unless it is actually integrated.**
+Conditional storage updates protect inventory. Incoming events are deduplicated. Uncertain sends stay visible for reconciliation. Authentication and transaction checks run on the server. Cancellation extraction uses operator-reviewed local rules.
 
-## Challenges
+**Current evidence:** the application passed 115 automated tests and its production build. The public rehearsal at [secondcrate.web.app](https://secondcrate.web.app) runs on Firebase Hosting, Cloud Run and a dedicated Firestore database. Nine HTTP recovery checks passed, including concurrent stock claims, persistence and logout; separate hosted checks verified session security and tenant isolation. All outbound messaging remains simulated. AWS account restrictions still block the separate AWS deployment and live Bedrock/CDS verification.
 
-The important challenge is deciding what the agent is allowed to commit. A plausible reply is not a confirmed order. SecondCrate needs to handle retries, ambiguous requests, simultaneous claims, late replies and failed messages without selling nonexistent stock or silently pretending a message arrived.
+## Challenges we ran into
 
-Another challenge is honest measurement. Recovered revenue must reconcile to actual orders, and a reservation must not be counted as completed delivery. That distinction also makes the product more useful to a depot manager.
+The hardest problem was deciding what the agent may commit. We tested simultaneous claims, duplicate replies, stale negotiations, expired deadlines and ambiguous provider outcomes to prevent oversells, unauthorised discounts and promises the depot cannot keep.
 
-## What makes the approach useful
+We also separated booked sales, spread above book cost and dispatched stock. Those distinctions make the financial picture more useful to a depot manager.
 
-SecondCrate combines a narrow commercial problem with a transaction that can be inspected end to end. It connects unstructured buyer requests to deterministic business rules, then exposes the resulting inventory and communication state to an operator.
+## Accomplishments that we're proud of
 
-Existing products already handle wholesale ordering and surplus redistribution. SecondCrate's proposed wedge is a focused cancelled-order recovery workflow within an established B2B network, with no new buyer application required for connected messaging channels. It is not a claim that conversational ordering or surplus recovery is new.
+- A complete recovery workflow with editable buyers, authenticated workspaces, order export and an inspectable audit trail.
+- A working stock-lock demonstration that sends two simultaneous requests for the final eight crates and confirms exactly one order.
+- A clear division between AI interpretation and the rules that authorise a transaction.
+- A reproducible build, meaningful failure-case tests and a commercial model that can be challenged with real pilot data.
 
-## Commercial model and next steps
+## What we learned
 
-The proposed price is £299 per depot per month. With an illustrative £5 contribution per additional crate, sixty additional crates sold in a month would cover that subscription. This is a break-even model, not a forecast or customer result. The business case includes messaging, model, infrastructure and support sensitivity.
+The value of an agent is the reliable action it can complete: a correctly priced order, against available stock, within a feasible delivery window.
 
-There are no claimed customers or measured field outcomes. Next is a paid pilot with regional wholesalers: establish their current recovery baseline, measure incremental contribution and coordinator effort, and test renewal at the proposed price. ERP integration priorities will follow those customers' actual systems.
+An existing buyer network also offers a focused starting point. The wholesaler already has relationships, preferences and routes. SecondCrate helps that network handle an exception.
 
-## Built with
+## What's next for your project
 
-**Confirm against the final release:** TypeScript, React, Node.js, Fastify, AWS SDK for JavaScript, Amazon Bedrock, Amazon SES, AWS End User Messaging Social, AWS End User Messaging SMS, AWS Lambda, Amazon DynamoDB, AWS CDK, Vitest.
+First, resolve AWS service access and verify the AWS deployment, model and messaging operations. Then run paid pilots with regional produce wholesalers, measuring incremental contribution, coordinator effort, opt-outs and fulfilment outcomes against their existing process.
 
-List only deployed or implemented tools. AgentCore, RCS, a payment processor, route optimisation and marketplace listings must not be listed as implemented unless the release provides evidence.
+Our pricing hypothesis is **£299 per depot per month**. At an assumed £5 contribution per additional crate, sixty additional crates cover the subscription. That is a break-even calculation to test, not claimed traction.
 
-## Creator and development disclosure
-
-SecondCrate was created for this hackathon by **Shivam Gupta**, who initiated the project and directed its product and commercial goals. Development used AI coding assistance for research, implementation, tests and documentation. The repository identifies its open-source dependencies; no pre-existing SecondCrate product or customer deployment is claimed. Add any other pre-existing work or third-party assets actually incorporated before submission.
-
-## WhatsApp prize description — use only after live verification
-
-**Conditional release copy:** SecondCrate uses AWS End User Messaging Social to send approved offers and receive buyer replies on WhatsApp. The Social Messaging SDK calls `SendWhatsAppMessage`; inbound events are authenticated before they reach the order workflow. A reply can propose quantity, price and a delivery condition, while deterministic rules control the transaction. Order state remains shared with the other connected channels. The video shows **[actual verified send and reply]** and distinguishes provider acceptance from delivery.
-
-If live WhatsApp has not been verified, replace the paragraph with: **“A WhatsApp adapter is included but live WhatsApp setup and validation remain pending. The rehearsal uses explicitly simulated messages.”** Do not select the WhatsApp prize on the strength of a simulated conversation.
+Pilot results will determine the first ERP integrations, retention controls and storage changes needed beyond the current bounded single-depot release. The long-term goal is simple: make recovering a cancelled order as dependable as taking the original one.

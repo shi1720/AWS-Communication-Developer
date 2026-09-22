@@ -1,0 +1,8 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // The API service account is the only data access path. Browser clients
+    // have no direct Firestore permissions or credentials.
+    match /{document=**} { allow read, write: if false; }
+  }
+}

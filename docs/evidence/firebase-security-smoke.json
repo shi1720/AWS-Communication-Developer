@@ -1,0 +1,20 @@
+{
+  "verifiedAt": "2026-09-22T08:28:00.150Z",
+  "target": "https://secondcrate.web.app",
+  "checks": [
+    "Firebase forwards Secure HttpOnly SameSite __session cookie",
+    "separate visitor sessions have separate durable workspaces",
+    "tenant updates remain isolated",
+    "another tenant cannot launch a unique lot belonging to the first tenant",
+    "cross-origin writes rejected",
+    "forged session rejected",
+    "registration, logout, incorrect-password rejection and fresh password login persist in Firestore",
+    "unconfigured live sends cannot be enabled",
+    "runtime accurately reports Firestore, rehearsal reasoning and unconfigured AWS channels"
+  ],
+  "externalMessagesSent": 0,
+  "knownLimitations": [
+    "Email verification and password recovery require activated AWS SES and a verified sender. Both return explicit EMAIL_NOT_CONFIGURED, rather than claiming an email was sent."
+  ],
+  "syntheticAccountCreated": true
+}

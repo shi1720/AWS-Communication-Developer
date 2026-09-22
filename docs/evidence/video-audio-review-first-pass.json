@@ -1,0 +1,6 @@
+{
+  "reviewType": "Automated audio-input model quality review; not human listening",
+  "model": "gpt-audio-1.5",
+  "videoSha256": "c642ac3d49bbf24fa1237b8c3793eb6b7f76d54ba173227e938aa789f4a2431c",
+  "review": "{\"clarity_score_1_to_10\": 9, \"naturalness_score_1_to_10\": 7, \"pacing_assessment\": \"Consistent and moderately paced, but slightly mechanical in transitions.\", \"audible_glitches_or_mispronunciations\": [], \"first_word_of_sentence_about_twenty_crates\": \"Then\", \"financial_numbers_heard\": [\"18 pounds\", \"16 pounds\", \"12 crates\", \"17 pounds\", \"14 pounds\", \"20 crates\", \"8 remain\", \"40 crates\", \"200 kilograms\", \"708 pounds\", \"480 pounds\", \"228 pounds\", \"299 pounds per depot each month\", \"5 pounds contribution\", \"60 extra crates\"], \"missing_or_cut_off_sentences\": \"None detected. All sentences appear complete.\", \"recommended_publish\": true, \"concise_reason\": \"Audio is clear and mostly natural with accurate pacing; it effectively conveys information without glitches.\", \"word_before_takes_twenty_crates\": \"Then\"}"
+}

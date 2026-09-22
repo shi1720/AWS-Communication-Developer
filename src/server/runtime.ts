@@ -6,15 +6,24 @@ import { DynamoAuthStore, LocalAuthStore } from "./auth.js";
 import { RehearsalReasoningAdapter } from "./rehearsal.js";
 import { LocalWorkspaceStore } from "./store.js";
 import { RecoveryService } from "./service.js";
+import { createFirestoreStores } from "./adapters/firestore.js";
 export function createRuntime() {
   const region = process.env.AWS_REGION || "eu-west-2";
   const tableName = process.env.TABLE_NAME || process.env.DYNAMODB_TABLE;
-  const store = tableName
-    ? new DynamoWorkspaceStore({ tableName, region })
-    : new LocalWorkspaceStore();
-  const authStore = tableName
-    ? new DynamoAuthStore(tableName, region)
-    : new LocalAuthStore();
+  const firebase = process.env.FIRESTORE_PROJECT_ID
+    ? createFirestoreStores(
+        process.env.FIRESTORE_PROJECT_ID,
+        process.env.FIRESTORE_DATABASE_ID,
+      )
+    : undefined;
+  const store =
+    firebase?.store ??
+    (tableName
+      ? new DynamoWorkspaceStore({ tableName, region })
+      : new LocalWorkspaceStore());
+  const authStore =
+    firebase?.authStore ??
+    (tableName ? new DynamoAuthStore(tableName, region) : new LocalAuthStore());
   const messaging: MessagingAdapter = new AWSMessagingAdapter({
     region,
     sesFromEmail: process.env.SES_FROM_EMAIL,
@@ -35,9 +44,11 @@ export function createRuntime() {
   const runtime: RuntimeStatus = {
     mode: "live",
     ai: process.env.BEDROCK_MODEL_ID ? "bedrock" : "rehearsal",
-    storage: tableName
-      ? "DynamoDB (optimistic concurrency)"
-      : "Local atomic JSON (single process)",
+    storage: firebase
+      ? "Firestore (transactional hosted preview)"
+      : tableName
+        ? "DynamoDB (optimistic concurrency)"
+        : "Local atomic JSON (single process)",
     channels: {
       email: Boolean(process.env.SES_FROM_EMAIL),
       whatsapp: Boolean(

@@ -1,33 +1,32 @@
 # SecondCrate release status
 
-Checkpoint: 22 September 2026. This file separates reproducible local evidence from required cloud and entrant actions.
+Checkpoint: 22 September 2026. Try the hosted application at **https://secondcrate.web.app** and choose **Explore the interactive demo**. This is an isolated rehearsal with synthetic businesses and simulated messaging.
 
 | Area | Verified state |
 | --- | --- |
-| Product | Complete local recovery workflow, isolated demo and private-account flows implemented |
-| Tests | 100 automated tests passed, TypeScript passed, production build passed |
-| Independent CI | GitHub Actions passed on Linux, including all 100 tests, the compiled-server HTTP workflow, CDK synthesis and a dependency audit with zero vulnerabilities ([initial run](https://github.com/shi1720/AWS-Communication-Developer/actions/runs/35702122265)) |
-| HTTP end to end | Nine checks passed against both the development proxy and compiled server: 40 crates, three orders, £708, duplicate replay, concurrent final-stock requests and revoked logout |
-| Infrastructure | Production frontend and CDK CloudFormation synthesis passed; actual stack not created |
-| AWS authentication | Repaired using a fresh Safari AWS session and CLI callback |
-| AWS account | `FREE / NOT_STARTED`; CloudFormation `OptInRequired`, SES `SubscriptionRequiredException` |
-| Bedrock | Actual controlled invocation attempted; `AccessDeniedException`, no output received |
-| External messaging | No messages sent. Adapter behavior is tested with mocks; live acceptance/receipts remain unverified |
-| Presentation | Eight-slide editable PPTX, pitch PDF, two-page technical brief, printable script, architecture SVG, offline teleprompter and recording guide |
-| Visual QA | Login and overview inspected in native Safari before rename; all final twelve PDF pages and final SVG reviewed. Full post-rename UI/teleprompter browser review remains pending because computer-use control timed out |
-| Human evidence | APN/corporate-email eligibility, ACE opportunity ID and final narrated video still needed |
+| Hosting | Firebase Hosting, Cloud Run API and a dedicated transactional Firestore database; secure session cookie and persistent workspace |
+| Product | Cancellation intake, buyer matching, conditional offers, price boundaries, atomic allocation, order ledger, impact calculator, exports and private signup/login |
+| Tests | 115 automated tests, TypeScript and production build passed |
+| Hosted workflow | Nine HTTP checks passed, plus signup/login/logout, tenant isolation, forged-session and cross-origin checks |
+| Browser workflow | Actual Safari run created lot SC-1045, rejected a £14 request, confirmed 12 crates at £17 and 20 at £18, then raced two claims for the final eight. One succeeded. A browser refresh retained three orders and £708 booked sales |
+| Financial display | £708 booked sales, £480 book cost, £228 product spread before fulfilment/software, 200 kg allocated; all synthetic |
+| Visual checks | Hosted login, intake dialog, buyer network, conversations, stock-lock result, ledger, impact and settings inspected. Narrow layout and navigation exercised with Safari zoom. Physical mobile-device testing remains unperformed |
+| Security/build | Both dependency audits report zero vulnerabilities. CDK synthesis passes. Password verification and recovery require SES, which is not connected in the public preview |
+| AWS account | Sign-in and identity verification succeed; Account Management reports ACTIVE. Free plan reports NOT_STARTED with deployment services unavailable. The user's Free plan is unchanged |
+| AWS runtime | CloudFormation returns OptInRequired; Lambda, DynamoDB and SES return SubscriptionRequiredException. Bedrock/CDS runtime success and AWS deployment are not verified |
+| Video | 2:46 narrated product walkthrough, actual hosted application captures, burned captions and matching SRT/VTT. It explicitly identifies the rehearsal and pending AWS verification |
+| Other deliverables | Editable eight-slide pitch, pitch PDF, technical brief, printable script, teleprompter, AWS architecture and actual preview architecture, story and YouTube publishing copy |
+| Submission | Devpost overview, story, technology tags, app/source links and cover saved as SecondCrate. Captioned video is published at [the direct viewing page](https://secondcrate.web.app/demo.html). YouTube upload is saved as a private draft; public publication is in progress. Entrant eligibility and a genuine ACE opportunity remain unresolved |
 
-The account activation page is `https://signup.aws.amazon.com/billing/signup?type=resubscribe#/urp`. AWS's own page identifies payment/identity verification and account activation as possible remaining steps and notes that activation can take up to 24 hours. Do not treat a successful login or the availability of model-listing APIs as proof that deployment services are active.
+This preview is functional and reviewable. It is not a verified AWS hackathon deployment or a claim of production readiness. See [FINAL_REVIEW.md](FINAL_REVIEW.md) for the evidence-based rubric assessment and operational limitations.
 
-## Resume after account activation
+## Remaining AWS and entrant requirements
 
-1. Run `scripts/aws-preflight.mjs` with the authenticated profile and an explicit region. Confirm CloudFormation access as well as the SES account state.
-2. Choose a supported Bedrock model and verify an owned SES sender. No buyer data is needed for the mailbox-simulator check.
-3. Build, bootstrap the selected AWS region and deploy `SecondCrate` using `docs/AWS_DEPLOYMENT.md`. Do not modify resources belonging to other projects.
-4. Run the actual app's HTTP smoke test against the CloudFront URL and verify secure session behavior.
-5. Run the controlled real Bedrock/SES checks. Configure SES receipts and retain redacted runtime evidence. If pursuing the WhatsApp prize, complete the approved marketing-template/reply/receipt flow through AWS EUM Social.
-6. Create the real operator account, verify its email, lock registration and route the single live workspace. Test live provider input before recording.
-7. Re-run the independent review, remove only evidence gaps actually resolved, and regenerate the artifacts with honest final status.
-8. Record the final demo, enter the accurate ACE opportunity and submit the complete Devpost entry before the deadline.
+1. Resolve AWS service enrollment through the account's official setup/support process. Identity verification is already marked Verified; repeating it is not established as necessary. The registration resubscribe page currently errors. Billing shows no payment method on file; the card-verification page is prepared for the owner to complete. Service access must be rechecked afterward. Do not upgrade the plan without the account owner's approval.
+2. Confirm the entrant's existing AWS Partner organization and corporate-email eligibility. AWS documents automatic Paid-plan conversion when a Free account joins APN, so do not enroll this account while its owner requires Free.
+3. After service access is restored, run `scripts/aws-preflight.mjs` with an explicit profile and region, deploy through [AWS_DEPLOYMENT.md](AWS_DEPLOYMENT.md), and run the same HTTP/security workflow against AWS.
+4. Verify a real Bedrock invocation and qualifying CDS operation. Keep provider acceptance distinct from confirmed delivery. WhatsApp-prize claims require a real EUM Social inbound/outbound flow.
+5. Supply a genuine ACE opportunity with campaign `AWS CDS Agentic AI Hackathon -Sept. 2026`. The fictional Northstar scenario is not a customer opportunity.
+6. Replace only claims supported by new evidence, record an AWS-verified demo and complete the final eligibility fields.
 
-Evidence: `docs/evidence/release-verification.json`, `docs/evidence/compiled-http-smoke.json`, `docs/evidence/http-smoke.json`, `docs/evidence/aws-preflight-2026-09-22.json`, `docs/evidence/aws-verification-attempt-2026-09-22.json`. Internal review: `docs/REVIEW.md`.
+Current evidence: [Firebase deployment](evidence/firebase-deployment.json), [hosted workflow](evidence/firebase-http-smoke.json), [hosted security](evidence/firebase-security-smoke.json), [AWS status](evidence/aws-activation-status.json). The earlier Linux CI run passed the original 100-test release; the expanded release will be checked after its commit is pushed.

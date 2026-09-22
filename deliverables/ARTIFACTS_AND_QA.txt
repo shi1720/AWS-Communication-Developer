@@ -5,12 +5,19 @@ DELIVERABLES
 SecondCrate-Pitch.pptx: editable eight-slide, 16:9 presentation.
 SecondCrate-Pitch.pdf: eight-page sharing copy of the final presentation.
 SecondCrate-Product-Technical-Brief.pdf: two-page product/architecture brief.
-SecondCrate-Video-Script.pdf: two-page exact 344-word release narration.
+SecondCrate-Video-Script.pdf: two-page exact 361-word rehearsal narration.
 SecondCrate-Teleprompter.html: offline narration, type/pace/theme controls,
   three-minute timer, rehearsal default and gated verified-service cuts.
+SecondCrate-Devpost-Cover.jpg: 1500 x 1000 JPEG, exact 3:2 project cover,
+  reusing the original brand artwork with creator credit and rehearsal label.
+SecondCrate-Demo.mp4: finished 2:46 narrated, captioned edited walkthrough.
+SecondCrate-Demo.srt / .vtt: matching subtitle files.
+SecondCrate-Video-Verification.json: technical and content review evidence.
 ../docs/assets/architecture.svg: original standalone vector architecture.
+../docs/assets/preview-architecture.svg: actual Firebase Hosting, Cloud Run and
+  named Firestore architecture for the public rehearsal at secondcrate.web.app.
 ../docs/RECORDING_GUIDE.md: Mac recording steps, scene timing, London fixture
-  and evidence gates. Hosted application URL remains a clear placeholder.
+  and evidence gates. Hosted rehearsal: https://secondcrate.web.app.
 
 SOURCES AND DESIGN
 Narration source: docs/VIDEO_SCRIPT.md. Research and commercial assumptions:
@@ -29,8 +36,18 @@ QA COMPLETED
 - Exported with bundled LibreOffice, never the user's desktop LibreOffice.
   Rendered and individually inspected all twelve final PDF pages and the SVG
   after renaming. Corrected prior title/diagram overflow and arrow direction.
-- Matched all eight printed narration paragraphs to the exact Markdown source.
+- Regenerated and visually checked all four script and technical-brief PDF
+  pages after the latest narration update. No clipping, overlap or missing text.
+- Updated the technical brief with the verified public rehearsal URL and the
+  separate pending AWS architecture. Rechecked both pages after that change.
+- Rendered the separate preview architecture SVG and corrected text padding.
+  It shows the verified Firebase Hosting, Cloud Run and named Firestore path,
+  with simulated reasoning/delivery and pending AWS qualification explicit.
+- Matched all eight printed narration paragraphs to the exact Markdown source,
+  with its rehearsal replacement in scene seven. Both cuts have 361 words.
   Checked exported PDFs for old branding and obsolete session-secret claims.
+- Scanned text in all PDFs and the editable PPTX package: no em dashes. The
+  eight-slide deck has unchanged content and required no new export.
 - Reconciled 12 x GBP17 + 20 x GBP18 + 8 x GBP18 = GBP708; GBP480 book cost;
   GBP228 spread before handling, delivery and software; 200 kg allocated.
 - Compared architecture with infra/stack.ts and Lambda/DynamoDB code. State uses
@@ -39,12 +56,18 @@ QA COMPLETED
 - Teleprompter DOM checks passed source fidelity, evidence gates, type/theme,
   fractional pace, play/pause/reset, scrolling and automatic stop at 3:00.
   The standalone HTML loads no external resources or network dependencies.
+- Devpost cover dimensions and RGB JPEG encoding verified. Full-size visual
+  inspection confirmed readable type, intact original artwork and safe margins.
 
 REMAINING BOUNDARIES
-HTML browser render review is pending: IAB was unavailable and Chrome CUA tab
-creation failed with unsupported auth method apikey. The AWS sign-in browser
-was left untouched. Use the offline HTML in a normal browser before recording.
-Cloud deployment, live model/provider validation and final video remain pending.
+The latest teleprompter check is DOM-based. It verifies controls and exact source
+fidelity, not a browser render. Use the offline HTML in a browser before recording.
+The public rehearsal passed nine HTTP workflow checks with zero external sends.
+The complete application passed 115 automated tests and its production build.
+AWS deployment and live model/provider validation remain pending. Required AWS
+service access remains blocked while the Free plan is retained; no paid-plan
+upgrade was authorised. The finished video is hosted at
+https://secondcrate.web.app/demo.html. Public YouTube publication remains pending.
 All example companies, buyers and outcomes are synthetic. Pricing/pilot targets
 are hypotheses. No traction, collected cash, certified food safety or measured
 waste avoidance is claimed. Internal previews and validation receipts stay in

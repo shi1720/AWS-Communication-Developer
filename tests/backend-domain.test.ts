@@ -50,6 +50,50 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 describe("recovery policy and transactional allocation", () => {
+  it("requires a new consent record to resume an opted-out buyer", async () => {
+    const { service, w } = await setup();
+    const original = w.buyers[0];
+    await service.updateBuyer(w.id, original.id, {
+      consent: false,
+      optedOut: true,
+    });
+    await expect(
+      service.updateBuyer(w.id, original.id, {
+        consent: true,
+        optedOut: false,
+      }),
+    ).rejects.toThrow("fresh consent");
+    await expect(
+      service.updateBuyer(w.id, original.id, {
+        consent: true,
+        optedOut: false,
+        consentSource: original.consentSource,
+        consentAt: original.consentAt,
+      }),
+    ).rejects.toThrow("fresh consent");
+    const result = await service.updateBuyer(w.id, original.id, {
+      consent: true,
+      optedOut: false,
+      consentSource:
+        "Buyer requested new offers through the account preference form today.",
+      consentAt: new Date().toISOString(),
+    });
+    expect(result.buyer.consent).toBe(true);
+    expect(result.buyer.optedOut).toBe(false);
+  });
+  it("validates the final buyer record inside the transaction", async () => {
+    const { service, w } = await setup();
+    await expect(
+      service.updateBuyer(w.id, w.buyers[0].id, {
+        phone: "",
+        consent: false,
+        optedOut: true,
+      }),
+    ).rejects.toThrow("Provide a contact for the preferred channel.");
+    const latest = await service.get(w.id);
+    expect(latest.buyers[0].phone).toBe(w.buyers[0].phone);
+    expect(latest.buyers[0].consent).toBe(true);
+  });
   it("starts with genuinely empty recovery; matches four eligible buyers without allocating stock", async () => {
     const { service, w, send } = await setup();
     expect(w.lots[0].status).toBe("draft");

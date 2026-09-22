@@ -1,4 +1,4 @@
-import { beforeEach, afterEach, describe, it, expect } from "vitest";
+import { beforeEach, afterEach, describe, it, expect, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 import { createApp } from "../src/server/app.js";
 import { MemoryWorkspaceStore } from "../src/server/store.js";
@@ -31,8 +31,68 @@ beforeEach(async () => {
 });
 afterEach(async () => {
   await app.close();
+  vi.unstubAllEnvs();
 });
 describe("session isolation, request validation and safe exports", () => {
+  it("enforces the hosted shared demo admission budget despite spoofed forwarded IPs", async () => {
+    await app.close();
+    vi.stubEnv("PUBLIC_DEMO_HOURLY_LIMIT", "2");
+    app = await createApp({ store, authStore, serveStatic: false });
+    for (const ip of ["192.0.2.1", "198.51.100.2"])
+      expect(
+        (
+          await app.inject({
+            method: "POST",
+            url: "/api/auth/demo",
+            headers: { "x-forwarded-for": ip },
+          })
+        ).statusCode,
+      ).toBe(200);
+    const blocked = await app.inject({
+      method: "POST",
+      url: "/api/auth/demo",
+      headers: { "x-forwarded-for": "203.0.113.3" },
+    });
+    expect(blocked.statusCode).toBe(429);
+    expect(blocked.json().code).toBe("RATE_LIMITED");
+  });
+  it("supports Firebase's forwarded __session cookie for secure login, workspace access and logout", async () => {
+    await app.close();
+    vi.stubEnv("SESSION_COOKIE_NAME", "__session");
+    vi.stubEnv("NODE_ENV", "production");
+    app = await createApp({ store, authStore, serveStatic: false });
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/auth/demo",
+    });
+    expect(response.statusCode).toBe(200);
+    const cookie = response.cookies.find(
+      (entry) => entry.name === "__session",
+    )!;
+    expect(cookie).toBeDefined();
+    expect(response.headers["set-cookie"]).toContain("Secure");
+    expect(response.headers["set-cookie"]).toContain("HttpOnly");
+    const forwarded = { cookie: `__session=${cookie.value}` };
+    const session = await app.inject({
+      url: "/api/session",
+      headers: forwarded,
+    });
+    expect(session.json().user.id).toBe(response.json().user.id);
+    expect(
+      (await app.inject({ url: "/api/dashboard", headers: forwarded }))
+        .statusCode,
+    ).toBe(200);
+    const logout = await app.inject({
+      method: "POST",
+      url: "/api/auth/logout",
+      headers: forwarded,
+    });
+    expect(logout.headers["set-cookie"]).toContain("__session=;");
+    expect(
+      (await app.inject({ url: "/api/dashboard", headers: forwarded }))
+        .statusCode,
+    ).toBe(401);
+  });
   it("requires authentication for workspace endpoints", async () => {
     expect((await app.inject("/api/dashboard")).statusCode).toBe(401);
     expect((await app.inject("/api/session")).json()).toEqual({ user: null });

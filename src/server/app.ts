@@ -6,7 +6,6 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { z } from "zod";
 import type {
-  Buyer,
   MessagingAdapter,
   ReasoningAdapter,
   RuntimeStatus,
@@ -109,14 +108,6 @@ const lotSchema = z
         path: ["deliveryBy"],
       });
   });
-function validateBuyer(buyer: Buyer | Omit<Buyer, "id">) {
-  if (buyer.consent && !buyer.consentSource?.trim())
-    throw new AppError(400, "Record the source of marketing consent.");
-  if (buyer.channel === "email" ? !buyer.email : !buyer.phone)
-    throw new AppError(400, "Provide a contact for the preferred channel.");
-  if (buyer.optedOut && buyer.consent)
-    throw new AppError(400, "An opted-out buyer cannot have active consent.");
-}
 export interface AppOptions {
   store?: WorkspaceStore;
   messaging?: MessagingAdapter;
@@ -128,6 +119,22 @@ export interface AppOptions {
   serveStatic?: boolean;
 }
 export async function createApp(options: AppOptions = {}) {
+  // Firebase does not provide a verifiable end-user IP through its public
+  // Cloud Run rewrite. Use an explicit shared admission budget there instead
+  // of trusting a spoofable forwarded header or treating all visitors as one IP.
+  const publicDemoHourlyLimit = process.env.PUBLIC_DEMO_HOURLY_LIMIT
+    ? z.coerce
+        .number()
+        .int()
+        .min(1)
+        .max(1000)
+        .parse(process.env.PUBLIC_DEMO_HOURLY_LIMIT)
+    : undefined;
+  // Firebase Hosting forwards only __session; direct AWS/local deployments keep the default.
+  const sessionCookieName =
+    process.env.SESSION_COOKIE_NAME || "secondcrate_session";
+  if (!/^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/.test(sessionCookieName))
+    throw new Error("SESSION_COOKIE_NAME must be a valid cookie name.");
   const defaults = createRuntime();
   const store = options.store || defaults.store;
   const messaging = options.messaging || defaults.messaging;
@@ -194,10 +201,15 @@ export async function createApp(options: AppOptions = {}) {
       !req.url.startsWith("/api/session") &&
       !req.url.startsWith("/api/health")
     ) {
-      const user = await auth.getSession(req.cookies.secondcrate_session);
+      const user = await auth.getSession(req.cookies[sessionCookieName]);
       if (!user)
         throw new AppError(401, "Sign in to continue.", "UNAUTHENTICATED");
       (req as typeof req & { user: SessionUser }).user = user;
+      if (
+        publicDemoHourlyLimit &&
+        ["POST", "PATCH", "PUT", "DELETE"].includes(req.method)
+      )
+        await auth.rateLimit(`workspace-writes:${user.workspaceId}`, 180);
     }
   });
   app.setErrorHandler((error, req, reply) => {
@@ -228,7 +240,7 @@ export async function createApp(options: AppOptions = {}) {
   });
   const getUser = (req: unknown) => (req as { user: SessionUser }).user;
   const setSession = (reply: FastifyReply, token: string) =>
-    reply.setCookie("secondcrate_session", token, {
+    reply.setCookie(sessionCookieName, token, {
       path: "/",
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -241,10 +253,16 @@ export async function createApp(options: AppOptions = {}) {
   };
   app.get("/api/health", async () => ({ ok: true }));
   app.get("/api/session", async (req) => ({
-    user: await auth.getSession(req.cookies.secondcrate_session),
+    user: await auth.getSession(req.cookies[sessionCookieName]),
   }));
   app.post("/api/auth/demo", async (req, reply) => {
-    await sensitiveLimit(req.ip, `demo:${req.ip}`, 20);
+    if (publicDemoHourlyLimit)
+      await auth.rateLimit(
+        "public-demo-shared",
+        publicDemoHourlyLimit,
+        60 * 60_000,
+      );
+    else await sensitiveLimit(req.ip, `demo:${req.ip}`, 20);
     const result = await auth.demo();
     setSession(reply, result.token);
     return { user: result.user };
@@ -276,12 +294,12 @@ export async function createApp(options: AppOptions = {}) {
     return { user: result.user };
   });
   app.post("/api/auth/logout", async (req, reply) => {
-    await auth.logout(req.cookies.secondcrate_session);
-    reply.clearCookie("secondcrate_session", { path: "/" });
+    await auth.logout(req.cookies[sessionCookieName]);
+    reply.clearCookie(sessionCookieName, { path: "/" });
     return { ok: true };
   });
   app.post("/api/auth/send-verification", async (req) => {
-    const user = await auth.getSession(req.cookies.secondcrate_session);
+    const user = await auth.getSession(req.cookies[sessionCookieName]);
     if (!user || user.isDemo)
       throw new AppError(
         401,
@@ -386,7 +404,7 @@ export async function createApp(options: AppOptions = {}) {
         sourceText: text,
         safetyAttested: false,
       },
-      model: "Assisted extraction / local rules — operator review required",
+      model: "Assisted extraction / local rules. Operator review required.",
     };
   });
   app.post("/api/lots/:id/launch", async (req) => {
@@ -412,7 +430,8 @@ export async function createApp(options: AppOptions = {}) {
   });
   app.post("/api/inbound", async (req) => {
     await auth.rateLimit(`inbound:${getUser(req).workspaceId}`, 60);
-    await auth.rateLimit(`inbound-ip:${req.ip}`, 120);
+    if (!publicDemoHourlyLimit)
+      await auth.rateLimit(`inbound-ip:${req.ip}`, 120);
     const input = z
       .object({
         buyerId: short,
@@ -431,17 +450,12 @@ export async function createApp(options: AppOptions = {}) {
   });
   app.post("/api/buyers", async (req) => {
     const buyer = buyerSchema.parse(req.body);
-    validateBuyer(buyer);
     return service.addBuyer(getUser(req).workspaceId, buyer);
   });
   app.patch("/api/buyers/:id", async (req) => {
     const input = buyerSchema.partial().parse(req.body);
     const id = z.object({ id: short }).parse(req.params).id;
-    const workspace = await service.get(getUser(req).workspaceId);
-    const buyer = workspace.buyers.find((b) => b.id === id);
-    if (!buyer) throw new AppError(404, "Buyer not found.");
-    validateBuyer({ ...buyer, ...input });
-    return service.updateBuyer(workspace.id, id, input);
+    return service.updateBuyer(getUser(req).workspaceId, id, input);
   });
   app.patch("/api/settings", async (req) => {
     const input = z

@@ -1,0 +1,6 @@
+{
+  "reviewType": "Automated audio-input model quality review; not human listening",
+  "model": "gpt-audio-1.5",
+  "videoSha256": "fa2e197529b3f38ac7984e4103f1e70a528f5df9c79a963c5c3ba30f117e82ef",
+  "review": "{\"clarity_score_1_to_10\": 8, \"naturalness_score_1_to_10\": 6, \"pacing_assessment\": \"Consistent, slightly fast at times but understandable\", \"audible_glitches_or_mispronunciations\": [{\"timestamp\": \"00:55\", \"issue\": \"slight stumble on 'concurrent requests'\"}, {\"timestamp\": \"01:26\", \"issue\": \"awkward pause before 'isolated rehearsal'\"}], \"first_word_of_sentence_about_twenty_crates\": \"Ben\", \"financial_numbers_heard\": [\"18\", \"16\", \"17\", \"14\", \"18\", \"708\", \"480\", \"228\", \"299\", \"5\", \"60\"], \"missing_or_cut_off_sentences\": false, \"recommended_publish\": true, \"concise_reason\": \"Overall clear with minor glitches; understandable and coherent.\", \"word_before_takes_twenty_crates\": \"Ben\"}"
+}

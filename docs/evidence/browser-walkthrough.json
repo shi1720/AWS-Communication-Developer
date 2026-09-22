@@ -1,0 +1,60 @@
+{
+  "verifiedAt": "2026-09-22T08:54:56.465702+00:00",
+  "url": "https://secondcrate.web.app",
+  "browser": "Native Safari controlled through computer-use tool",
+  "syntheticData": true,
+  "recordingLot": "SC-1045",
+  "checks": {
+    "sessionSurvivedRevisionChange": true,
+    "intakeModalVisibleAfterCssFix": true,
+    "cancellationExtractionReviewed": true,
+    "dispatchLondon": "2026-09-23 12:45",
+    "deliveryLondon": "2026-09-23 13:30",
+    "floorRequest": {
+      "price": 14,
+      "result": "counteroffer at 16; no stock allocated"
+    },
+    "conditionalOrder": {
+      "buyer": "Olive & Rye",
+      "quantity": 12,
+      "price": 17,
+      "condition": "delivery before 2 pm",
+      "total": 204
+    },
+    "secondOrder": {
+      "buyer": "The Sunday Table",
+      "quantity": 20,
+      "price": 18,
+      "total": 360
+    },
+    "concurrentFinalStock": {
+      "requestedByEach": 8,
+      "buyers": [
+        "Ember Kitchen",
+        "Common Ground"
+      ],
+      "winner": "Common Ground",
+      "ordersCreated": 1,
+      "total": 144,
+      "remaining": 0
+    },
+    "reloadPersistence": {
+      "orders": 3,
+      "allocatedCrates": 40,
+      "bookedSales": 708
+    },
+    "impact": {
+      "bookCost": 480,
+      "spreadBeforeFulfilmentAndSoftware": 228,
+      "allocatedKg": 200
+    },
+    "runtimeLabels": "Demo simulated delivery; deterministic interpreter; Firestore; AWS channels not connected",
+    "responsive": "Safari high-zoom narrow layout, navigation drawer and Escape dismissal inspected"
+  },
+  "limitations": [
+    "Physical mobile-device testing not performed",
+    "Live external messaging and Bedrock were not available",
+    "Chrome control returned an empty window during publishing; YouTube upload remains pending"
+  ],
+  "screenshots": "Hashes retained in deliverables/SecondCrate-Video-Verification.json"
+}

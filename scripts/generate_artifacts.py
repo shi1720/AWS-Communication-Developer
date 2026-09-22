@@ -122,10 +122,50 @@ def architecture_pdf(c, x, top, width):
     tx('EventBridge retries queued sends. Unknown provider outcomes need review.',40,687,20)
     tx('SES inbound MIME uses private S3. Provider routing: one live workspace.',40,726,20)
 
+def preview_architecture_svg():
+    text='''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 740" role="img" aria-labelledby="title desc">
+  <title id="title">SecondCrate public rehearsal architecture</title>
+  <desc id="desc">The verified public preview uses Firebase Hosting at secondcrate.web.app. Same-origin API requests reach Cloud Run in europe-west1, which authenticates requests and uses atomic transactions in the named Firestore database secondcrate. Direct browser database access is denied. Reasoning and delivery are simulated. The intended AWS deployment remains separate and pending.</desc>
+  <rect width="1280" height="740" fill="#f7f8f5"/>
+  <style>text{font-family:Liberation Sans,Arial,sans-serif;fill:#244c3a}.title{font-size:38px;font-weight:700}.subtitle{font-size:23px}.label{font-size:27px;font-weight:700}.body{font-size:20px}.small{font-size:17px;fill:#617065}</style>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="#617065"/></marker></defs>
+  <text x="48" y="68" class="title">SecondCrate public rehearsal</text>
+  <text x="48" y="112" class="subtitle">https://secondcrate.web.app</text>
+  <text x="48" y="158" class="small">Verified hosting path. Synthetic demonstration data. Zero external messages sent in the hosted smoke test.</text>
+  <g fill="none" stroke="#617065" stroke-width="3" marker-end="url(#arrow)">
+    <path d="M279 293H331"/><path d="M568 293H620"/><path d="M857 293H909"/>
+  </g>
+  <rect x="48" y="224" width="230" height="138" rx="6" fill="#ffffff" stroke="#d8ded5"/>
+  <text x="66" y="268" class="label">Browser</text>
+  <text x="66" y="303" class="body">Isolated workspace</text>
+  <text x="66" y="333" class="body" style="font-size:18px">Opaque session cookie</text>
+  <rect x="332" y="224" width="236" height="138" rx="6" fill="#d4e9a8"/>
+  <text x="350" y="268" class="label" style="font-size:24px">Firebase Hosting</text>
+  <text x="350" y="303" class="body">HTTPS frontend</text>
+  <text x="350" y="333" class="body">Same-origin /api route</text>
+  <rect x="621" y="224" width="236" height="138" rx="6" fill="#244c3a"/>
+  <text x="639" y="268" class="label" style="fill:#ffffff">Cloud Run</text>
+  <text x="639" y="303" class="body" style="fill:#ffffff">Fastify application</text>
+  <text x="639" y="333" class="body" style="fill:#ffffff">europe-west1</text>
+  <rect x="910" y="224" width="322" height="138" rx="6" fill="#ffffff" stroke="#d8ded5"/>
+  <text x="928" y="268" class="label">Firestore</text>
+  <text x="928" y="303" class="body">Named database: secondcrate</text>
+  <text x="928" y="333" class="body">Atomic state updates</text>
+  <path d="M48 412H1232" stroke="#d8ded5" stroke-width="2"/>
+  <text x="48" y="466" class="label">The application checks the transaction</text>
+  <text x="48" y="505" class="body">Server-side sessions and workspace isolation. Price, stock, capacity and delivery rules.</text>
+  <text x="48" y="539" class="body">Concurrent claims and duplicate events share one persisted inventory ledger.</text>
+  <text x="48" y="573" class="body">Database rules deny direct browser access. Demo expiry is enforced by the application.</text>
+  <text x="48" y="644" class="label">AWS qualification remains pending</text>
+  <text x="48" y="683" class="body">This preview uses rehearsal interpretation and simulated delivery. No live Bedrock or AWS CDS claim.</text>
+  <text x="48" y="721" class="small">Source: firebase.json, infra/firebase, src/server/adapters/firestore.ts and the hosted HTTP smoke-test evidence.</text>
+</svg>'''
+    (ASSETS/'preview-architecture.svg').write_text(text)
+
 def make_brief():
     c=canvas.Canvas(str(OUT/'SecondCrate-Product-Technical-Brief.pdf'),pagesize=(PW,PH))
     c.setTitle('SecondCrate - Product and technical brief');c.setAuthor('Shivam Gupta')
-    base(c,'Every good lot deserves a buyer',1,'A product brief for regional produce distributors')
+    base(c,'Every good lot deserves a buyer',1,'Public rehearsal: secondcrate.web.app')
     paragraph(c,'A cancelled order can become a useful conversation.',44,151,504,21,G,True)
     paragraph(c,'SecondCrate helps a depot offer released stock to existing buyers, interpret conditional replies and confirm only orders that fit its price, inventory and delivery rules. Customers can stay in their connected messaging channel.',44,213,507,12,leading=16)
     rule(c,284)
@@ -150,16 +190,16 @@ def make_brief():
     paragraph(c,'£299 per depot per month. At £5 contribution per additional crate, 60 additional crates cover the subscription. A paid pilot must establish incremental results against the current process.',44,708,507,11,M,leading=14)
     paragraph(c,'Synthetic Northstar Produce scenario. No customer traction, collected revenue or measured avoided waste is claimed.',44,762,507,8.5,M)
     c.showPage()
-    base(c,'Transaction integrity on AWS',2,'Deployable architecture. Cloud validation pending.')
-    paragraph(c,'Authenticated workspaces separate operators. A constrained Bedrock result proposes an intent, then deterministic checks decide whether the request can commit stock. The model cannot override those checks.',44,147,507,11.5,leading=15)
+    base(c,'Intended AWS architecture',2,'Public preview: Firebase Hosting, Cloud Run and Firestore')
+    paragraph(c,'The public rehearsal at secondcrate.web.app persists state in a dedicated Firestore database. The AWS design below is implemented in CDK but is not deployed. Live Bedrock inference and CDS messaging verification remain pending.',44,147,507,11.5,leading=15)
     architecture_pdf(c,27,168,541)
     rule(c,526)
     paragraph(c,'Integrity under real messaging conditions',44,547,507,18,G,True)
     paragraph(c,'Price and capacity rules run before an order commits. DynamoDB snapshot chunks and a transactional compare-and-swap head preserve shared inventory. Event IDs protect against inbound replay. Failed and unknown delivery outcomes remain visible.',44,581,507,11,leading=15)
     paragraph(c,'Operational limits',44,664,245,13,G,True)
-    paragraph(c,'One configured live workspace receives provider events. Workspace snapshots have a 2 MB limit. Human stock release does not certify food safety.',44,690,245,10,M,leading=13)
+    paragraph(c,'AWS provider routing targets one live workspace. Workspace snapshots have a 2 MB limit. Human stock release does not certify food safety.',44,690,245,10,M,leading=13)
     paragraph(c,'Next validation',316,664,235,13,G,True)
-    paragraph(c,'Deploy to AWS, verify Bedrock and SES, connect additional approved channels, then run paid depot pilots with measured baselines.',316,690,235,10,M,leading=13)
+    paragraph(c,'Resolve AWS service access, deploy and verify Bedrock and SES. Then run paid depot pilots with measured baselines.',316,690,235,10,M,leading=13)
     paragraph(c,'Sources: repository infra/stack.ts and src/server/lambda.ts; docs/BUSINESS_CASE.md. Research: WRAP, UK surplus redistribution (2023 data), wrap.ngo. AWS pricing: aws.amazon.com/end-user-messaging/pricing and aws.amazon.com/ses/pricing. Checked 22 September 2026.',44,755,507,8,M,leading=10)
     c.showPage();c.save()
 
@@ -169,13 +209,17 @@ def make_script():
     parts=re.findall(r'### ([^\n]+)\n\n(.*?)(?=\n\n### |\Z)',body.strip(),re.S)
     assert len(parts)==8,len(parts)
     spoken=' '.join(text.strip() for _,text in parts)
-    assert len(spoken.split())==344
+    assert len(spoken.split())==361
+    rehearsal=source.split('## Exact rehearsal replacement:',1)[1]
+    rehearsal=re.search(r'\n> (.+)',rehearsal).group(1)
+    parts[6]=(parts[6][0],rehearsal)
+    assert len(' '.join(text.strip() for _,text in parts).split())==361
     c=canvas.Canvas(str(OUT/'SecondCrate-Video-Script.pdf'),pagesize=(PW,PH))
     c.setTitle('SecondCrate - Exact three-minute narration');c.setAuthor('Shivam Gupta')
     for p in range(2):
-      base(c,'Three-minute narration',p+1,'Shivam Gupta / 344 spoken words / Read the body paragraphs only')
+      base(c,'Three-minute narration',p+1,'Created by Shivam Gupta / 361 words / Rehearsal cut')
       if p==0:
-        paragraph(c,'This release script requires verified live Bedrock and SES evidence. The development-preview replacement is in docs/VIDEO_SCRIPT.md.',44,146,507,10,A,True,14)
+        paragraph(c,'Read only the body paragraphs. This script uses the current rehearsal status. Verified AWS alternatives are in docs/VIDEO_SCRIPT.md.',44,146,507,10,A,True,14)
       else:
         paragraph(c,'The financial figures describe the synthetic demonstration. Keep the actual runtime and channel status visible in the recording.',44,146,507,10,A,True,14)
       y=199
@@ -188,6 +232,7 @@ def make_script():
     c.save()
 
 architecture_svg()
+preview_architecture_svg()
 make_brief()
 make_script()
-print('Created architecture.svg and two PDF documents.')
+print('Created intended AWS and verified preview diagrams plus two PDF documents.')

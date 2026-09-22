@@ -1,0 +1,36 @@
+{
+  "demo.html": {
+    "status": 200,
+    "contentType": "text/html; charset=utf-8",
+    "bytes": 5254,
+    "sha256": "abe9b32979b579d16374de6e61ad8a4bcc720f3bdab3a88c4cd05fde4224e752",
+    "matchesLocal": true
+  },
+  "demo.mp4": {
+    "status": 200,
+    "contentType": "video/mp4",
+    "bytes": 6398064,
+    "sha256": "fa2e197529b3f38ac7984e4103f1e70a528f5df9c79a963c5c3ba30f117e82ef",
+    "matchesLocal": true
+  },
+  "demo.vtt": {
+    "status": 200,
+    "contentType": "text/vtt; charset=utf-8",
+    "bytes": 3783,
+    "sha256": "79950be5137948ac906d7a62b4d5291f7a2cd3568f1cf995877f622eaaf14bd7",
+    "matchesLocal": true
+  },
+  "demo-poster.jpg": {
+    "status": 200,
+    "contentType": "image/jpeg",
+    "bytes": 111488,
+    "sha256": "0a20b9c6c290fbaf4ee5e28dca30162bf983c0a94e87c5810c45b47d48c9ec69",
+    "matchesLocal": true
+  },
+  "videoRange": {
+    "status": 206,
+    "contentRange": "bytes 0-1023/6398064",
+    "bytes": 1024
+  },
+  "verifiedAt": "2026-09-22T09:02:57.822407+00:00"
+}

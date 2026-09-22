@@ -117,6 +117,14 @@ function checkUniqueContact(
       "CONTACT_EXISTS",
     );
 }
+function validateBuyer(buyer: Buyer | Omit<Buyer, "id">) {
+  if (buyer.consent && !buyer.consentSource?.trim())
+    throw new AppError(400, "Record the source of marketing consent.");
+  if (buyer.channel === "email" ? !buyer.email : !buyer.phone)
+    throw new AppError(400, "Provide a contact for the preferred channel.");
+  if (buyer.optedOut && buyer.consent)
+    throw new AppError(400, "An opted-out buyer cannot have active consent.");
+}
 function queue(
   workspace: Workspace,
   buyer: Buyer,
@@ -371,7 +379,7 @@ export class RecoveryService {
             result.status === "sent"
               ? "Message accepted by provider"
               : "Message delivery updated",
-            `${message.channel}: ${result.status}${result.error ? ` — ${result.error}` : ""}`,
+            `${message.channel}: ${result.status}${result.error ? `. ${result.error}` : ""}`,
             "system",
             { lotId: message.lotId, buyerId: message.buyerId },
           );
@@ -987,6 +995,7 @@ export class RecoveryService {
   }
   async addBuyer(workspaceId: string, input: Omit<Buyer, "id">) {
     const { value: buyer } = await this.transact(workspaceId, (w) => {
+      validateBuyer(input);
       if (w.buyers.length >= 100)
         throw new AppError(
           409,
@@ -1016,6 +1025,7 @@ export class RecoveryService {
       workspaceId,
       (w) => {
         const buyer = findBuyer(w, id);
+        validateBuyer({ ...buyer, ...input });
         checkUniqueContact(w, { ...buyer, ...input }, id);
         const destinationChanged =
           (input.channel !== undefined && input.channel !== buyer.channel) ||
@@ -1023,7 +1033,8 @@ export class RecoveryService {
             input.email.toLowerCase() !== buyer.email.toLowerCase()) ||
           (input.phone !== undefined && input.phone !== buyer.phone);
         if (
-          destinationChanged &&
+          (destinationChanged ||
+            ((!buyer.consent || buyer.optedOut) && input.consent === true)) &&
           (input.consent ?? buyer.consent) &&
           (input.consent !== true ||
             !input.consentSource?.trim() ||
@@ -1032,7 +1043,7 @@ export class RecoveryService {
         )
           throw new AppError(
             400,
-            "Record fresh consent for the new channel or contact details.",
+            "Record fresh consent before restoring outreach or changing the channel or contact details.",
             "CONSENT_REQUIRED",
           );
         Object.assign(buyer, input);

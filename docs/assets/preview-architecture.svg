@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 740" role="img" aria-labelledby="title desc">
+  <title id="title">SecondCrate public rehearsal architecture</title>
+  <desc id="desc">The verified public preview uses Firebase Hosting at secondcrate.web.app. Same-origin API requests reach Cloud Run in europe-west1, which authenticates requests and uses atomic transactions in the named Firestore database secondcrate. Direct browser database access is denied. Reasoning and delivery are simulated. The intended AWS deployment remains separate and pending.</desc>
+  <rect width="1280" height="740" fill="#f7f8f5"/>
+  <style>text{font-family:Liberation Sans,Arial,sans-serif;fill:#244c3a}.title{font-size:38px;font-weight:700}.subtitle{font-size:23px}.label{font-size:27px;font-weight:700}.body{font-size:20px}.small{font-size:17px;fill:#617065}</style>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="#617065"/></marker></defs>
+  <text x="48" y="68" class="title">SecondCrate public rehearsal</text>
+  <text x="48" y="112" class="subtitle">https://secondcrate.web.app</text>
+  <text x="48" y="158" class="small">Verified hosting path. Synthetic demonstration data. Zero external messages sent in the hosted smoke test.</text>
+  <g fill="none" stroke="#617065" stroke-width="3" marker-end="url(#arrow)">
+    <path d="M279 293H331"/><path d="M568 293H620"/><path d="M857 293H909"/>
+  </g>
+  <rect x="48" y="224" width="230" height="138" rx="6" fill="#ffffff" stroke="#d8ded5"/>
+  <text x="66" y="268" class="label">Browser</text>
+  <text x="66" y="303" class="body">Isolated workspace</text>
+  <text x="66" y="333" class="body" style="font-size:18px">Opaque session cookie</text>
+  <rect x="332" y="224" width="236" height="138" rx="6" fill="#d4e9a8"/>
+  <text x="350" y="268" class="label" style="font-size:24px">Firebase Hosting</text>
+  <text x="350" y="303" class="body">HTTPS frontend</text>
+  <text x="350" y="333" class="body">Same-origin /api route</text>
+  <rect x="621" y="224" width="236" height="138" rx="6" fill="#244c3a"/>
+  <text x="639" y="268" class="label" style="fill:#ffffff">Cloud Run</text>
+  <text x="639" y="303" class="body" style="fill:#ffffff">Fastify application</text>
+  <text x="639" y="333" class="body" style="fill:#ffffff">europe-west1</text>
+  <rect x="910" y="224" width="322" height="138" rx="6" fill="#ffffff" stroke="#d8ded5"/>
+  <text x="928" y="268" class="label">Firestore</text>
+  <text x="928" y="303" class="body">Named database: secondcrate</text>
+  <text x="928" y="333" class="body">Atomic state updates</text>
+  <path d="M48 412H1232" stroke="#d8ded5" stroke-width="2"/>
+  <text x="48" y="466" class="label">The application checks the transaction</text>
+  <text x="48" y="505" class="body">Server-side sessions and workspace isolation. Price, stock, capacity and delivery rules.</text>
+  <text x="48" y="539" class="body">Concurrent claims and duplicate events share one persisted inventory ledger.</text>
+  <text x="48" y="573" class="body">Database rules deny direct browser access. Demo expiry is enforced by the application.</text>
+  <text x="48" y="644" class="label">AWS qualification remains pending</text>
+  <text x="48" y="683" class="body">This preview uses rehearsal interpretation and simulated delivery. No live Bedrock or AWS CDS claim.</text>
+  <text x="48" y="721" class="small">Source: firebase.json, infra/firebase, src/server/adapters/firestore.ts and the hosted HTTP smoke-test evidence.</text>
+</svg>

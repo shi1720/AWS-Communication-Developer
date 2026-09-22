@@ -13,7 +13,7 @@ assert.equal(
     .map((s) => s.text)
     .join(" ")
     .split(/\s+/).length,
-  344,
+  361,
 );
 const rehearsal = source
   .split("## Exact rehearsal replacement:")[1]
@@ -64,5 +64,5 @@ draw();sizing();pacing();requestAnimationFrame(frame);
 </script></body></html>`;
 await fs.writeFile("deliverables/SecondCrate-Teleprompter.html", html);
 console.log(
-  "Created SecondCrate-Teleprompter.html from exact narration; 344 words in verified-AWS cut.",
+  "Created SecondCrate-Teleprompter.html from exact narration; 361 words in verified-AWS cut.",
 );

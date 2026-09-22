@@ -1,0 +1,46 @@
+{
+  "verifiedAt": "2026-09-22T08:31:27.292Z",
+  "url": "https://secondcrate.web.app",
+  "stage": "hosted-rehearsal",
+  "qualifyingAWSRuntime": false,
+  "cloudRunRevision": "secondcrate-00002-b78",
+  "hostingVersion": "sites/secondcrate/versions/11d919a2f91780c6",
+  "region": "europe-west1",
+  "storage": "Firestore named database secondcrate; transactional chunked workspace snapshots",
+  "frontend": {
+    "javascript": "/assets/index-CFFJh_pU.js",
+    "stylesheet": "/assets/index-BtHkn2Ey.css"
+  },
+  "session": {
+    "cookieName": "__session",
+    "appOrigin": "https://secondcrate.web.app"
+  },
+  "limits": {
+    "publicDemoAdmissionsPerHour": 100,
+    "workspaceWritesPer15Minutes": 180,
+    "workspaceInboundPer15Minutes": 60,
+    "maxCloudRunInstances": 3,
+    "minCloudRunInstances": 0
+  },
+  "cacheHeaders": {
+    "html": "no-cache",
+    "api": "private,no-store",
+    "hashedAsset": "public,max-age=31536000,immutable"
+  },
+  "validation": {
+    "unitAndIntegrationTests": 115,
+    "productionBuild": "passed",
+    "cloudBuild": "passed",
+    "hostedRecoverySmoke": "passed",
+    "hostedSecurityAndPersistenceSmoke": "passed",
+    "externalMessagesSent": 0
+  },
+  "limitations": [
+    "AWS account service activation remains blocked; no qualifying AWS runtime proof.",
+    "SES verification and password recovery are unavailable until sender and AWS service access are configured.",
+    "Demo messaging and reasoning are simulated and identified in the application."
+  ],
+  "videoPage": "https://secondcrate.web.app/demo.html",
+  "videoSha256": "fa2e197529b3f38ac7984e4103f1e70a528f5df9c79a963c5c3ba30f117e82ef",
+  "staticMediaPublishedAt": "2026-09-22T08:56:59.280362+00:00"
+}

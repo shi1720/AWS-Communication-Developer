@@ -1,0 +1,171 @@
+WEBVTT
+
+00:00:00.350 --> 00:00:02.330
+Forty crates of tomatoes.
+
+00:00:02.970 --> 00:00:04.490
+One cancelled restaurant order.
+
+00:00:05.030 --> 00:00:10.250
+A truck that leaves soon. Who takes the
+stock now? This is SecondCrate,
+
+00:00:11.150 --> 00:00:12.210
+created by Shivam Gupta.
+
+00:00:12.990 --> 00:00:16.750
+It helps produce wholesalers turn
+cancelled orders into confirmed sales
+
+00:00:16.750 --> 00:00:18.490
+through the buyers they already know.
+
+00:00:19.450 --> 00:00:23.230
+This is Northstar Produce, our fictional
+demonstration wholesaler.
+
+00:00:23.770 --> 00:00:26.010
+I paste the cancellation and review the
+lot:
+
+00:00:26.650 --> 00:00:30.310
+forty crates, an eighteen pound offer
+and a sixteen pound minimum.
+
+00:00:30.910 --> 00:00:35.690
+The operator confirms the stock is available
+and sets the dispatch and delivery times.
+
+00:00:36.350 --> 00:00:39.570
+The delivery promise stays visible
+throughout the workflow.
+
+00:00:40.617 --> 00:00:43.917
+SecondCrate checks which buyers fit the
+product,
+
+00:00:44.277 --> 00:00:47.297
+have permission to receive offers and
+can take the stock.
+
+00:00:47.997 --> 00:00:51.037
+It prepares their conversations across
+the configured channels.
+
+00:00:51.917 --> 00:00:54.337
+Every conversation shares the same
+inventory.
+
+00:00:55.257 --> 00:00:56.797
+Buyers do not need another app.
+
+00:00:58.283 --> 00:01:01.223
+Maya asks for twelve crates at seventeen
+pounds,
+
+00:01:01.503 --> 00:01:03.203
+provided delivery is before two.
+
+00:01:03.883 --> 00:01:05.423
+The agent interprets the request;
+
+00:01:06.183 --> 00:01:08.163
+application rules check the price,
+quantity,
+
+00:01:08.703 --> 00:01:11.683
+capacity and delivery window. The order
+is confirmed.
+
+00:01:12.363 --> 00:01:14.823
+Here is a fourteen pound request that
+was rejected.
+
+00:01:15.323 --> 00:01:17.403
+The agent cannot negotiate away the
+minimum.
+
+00:01:18.817 --> 00:01:23.237
+Ben takes twenty crates at eighteen
+pounds. Eight remain.
+
+00:01:23.897 --> 00:01:26.957
+Now watch two buyers claim those final
+eight at the same time.
+
+00:01:27.517 --> 00:01:30.337
+This button sends two concurrent
+requests to the server.
+
+00:01:31.017 --> 00:01:33.877
+One succeeds. The other sees the
+remaining availability.
+
+00:01:34.737 --> 00:01:36.917
+Forty crates never become forty eight
+promises.
+
+00:01:37.697 --> 00:01:40.237
+Refresh the page, and that result is
+still there.
+
+00:01:41.517 --> 00:01:44.857
+The ledger now shows three orders: forty
+crates,
+
+00:01:45.077 --> 00:01:49.697
+two hundred kilograms allocated and seven
+hundred and eight pounds in booked sales.
+
+00:01:50.677 --> 00:01:52.657
+Subtract four hundred and eighty pounds
+in book cost,
+
+00:01:52.657 --> 00:01:58.637
+and the spread is two hundred and twenty eight
+pounds, before handling, delivery and software.
+
+00:01:59.717 --> 00:02:02.637
+This recording uses the isolated
+rehearsal.
+
+00:02:03.557 --> 00:02:06.277
+Messages are simulated, and the
+application says so.
+
+00:02:06.897 --> 00:02:11.037
+The inventory decisions run against the
+server and persist after refresh.
+
+00:02:11.957 --> 00:02:16.237
+AWS integrations are implemented, but
+account activation is still
+
+00:02:16.237 --> 00:02:19.417
+blocking AWS deployment and live service
+verification.
+
+00:02:19.737 --> 00:02:22.537
+This preview makes that boundary
+visible.
+
+00:02:23.683 --> 00:02:28.023
+The proposed price is two hundred and
+ninety nine pounds per depot each
+
+00:02:28.023 --> 00:02:31.603
+month. At five pounds contribution per
+additional crate,
+
+00:02:32.263 --> 00:02:33.843
+sixty extra crates cover it.
+
+00:02:34.463 --> 00:02:36.163
+Paid pilots will test those assumptions.
+
+00:02:37.083 --> 00:02:39.343
+SecondCrate gives good stock another
+buyer,
+
+00:02:39.603 --> 00:02:41.643
+and the depot a promise it can keep.

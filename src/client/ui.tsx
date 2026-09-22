@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode, type RefObject } from "react";
 import { Loader2, X } from "lucide-react";
 
 export function Button({
@@ -31,23 +31,15 @@ export function Button({
     </button>
   );
 }
-export function Modal({
-  title,
-  subtitle,
-  children,
-  onClose,
-  wide = false,
-}: {
-  title: string;
-  subtitle?: string;
-  children: ReactNode;
-  onClose: () => void;
-  wide?: boolean;
-}) {
-  const container = useRef<HTMLDivElement>(null);
+export function useDialogFocus(
+  container: RefObject<HTMLElement | null>,
+  onClose: () => void,
+  active = true,
+) {
   const closeRef = useRef(onClose);
   closeRef.current = onClose;
   useEffect(() => {
+    if (!active) return;
     const previous = document.activeElement as HTMLElement;
     const el = container.current;
     el?.focus();
@@ -77,9 +69,26 @@ export function Modal({
     return () => {
       document.removeEventListener("keydown", listener);
       document.body.style.overflow = old;
-      previous?.focus();
+      if (previous?.isConnected) previous.focus();
     };
-  }, []);
+  }, [active, container]);
+}
+
+export function Modal({
+  title,
+  subtitle,
+  children,
+  onClose,
+  wide = false,
+}: {
+  title: string;
+  subtitle?: string;
+  children: ReactNode;
+  onClose: () => void;
+  wide?: boolean;
+}) {
+  const container = useRef<HTMLDivElement>(null);
+  useDialogFocus(container, onClose);
   return (
     <div
       className="modal-backdrop"

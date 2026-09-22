@@ -65,6 +65,13 @@ async function click(selector: string) {
     button!.click();
   });
 }
+async function clickText(text: string) {
+  const button = [
+    ...container.querySelectorAll<HTMLButtonElement>("button"),
+  ].find((element) => element.textContent?.trim() === text);
+  expect(button).toBeDefined();
+  await act(async () => button!.click());
+}
 afterEach(async () => {
   if (root) await act(async () => root!.unmount());
   root = undefined;
@@ -74,6 +81,131 @@ afterEach(async () => {
 });
 
 describe("session transitions protect workspace data", () => {
+  it("requires draft extraction to finish before the operator edits or creates a lot", async () => {
+    const current = fixture("Intake Depot");
+    const extraction = deferred<{
+      draft: { product: string; quantity: number };
+    }>();
+    mockedApi.mockImplementation(((path: string) => {
+      if (path === "/session") return Promise.resolve({ user: current.user });
+      if (path === "/dashboard") return Promise.resolve(current);
+      if (path === "/lots/extract") return extraction.promise;
+      throw new Error(`Unexpected request ${path}`);
+    }) as typeof api);
+    await mount();
+    await clickText("New recovery");
+    const source = container.querySelector<HTMLTextAreaElement>(
+      '[aria-label="Cancellation email text"]',
+    )!;
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(
+        HTMLTextAreaElement.prototype,
+        "value",
+      )!.set!.call(source, "Cancelled: 12 crates of peppers, 5 kg each.");
+      source.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await clickText("Extract a draft");
+    expect(
+      container.querySelector<HTMLFieldSetElement>(".lot-fields")?.disabled,
+    ).toBe(true);
+    expect(source.disabled).toBe(true);
+    expect(
+      container.querySelector<HTMLButtonElement>(
+        '.lot-form button[type="submit"]',
+      )?.disabled,
+    ).toBe(true);
+    expect(container.textContent).toContain(
+      "Enter dates in your device time zone",
+    );
+    await act(async () =>
+      extraction.resolve({ draft: { product: "Peppers", quantity: 12 } }),
+    );
+    expect(
+      container.querySelector<HTMLFieldSetElement>(".lot-fields")?.disabled,
+    ).toBe(false);
+    expect(
+      container.querySelector<HTMLInputElement>(
+        'input[placeholder="e.g. Cherry tomatoes"]',
+      )?.value,
+    ).toBe("Peppers");
+  });
+  it("closes mobile navigation on Settings selection and supports backdrop and Escape dismissal", async () => {
+    const current = fixture("Mobile Depot");
+    mockedApi.mockImplementation(((path: string) =>
+      Promise.resolve(
+        path === "/session" ? { user: current.user } : current,
+      )) as typeof api);
+    await mount();
+    const trigger = container.querySelector<HTMLButtonElement>(
+      '[aria-label="Open navigation"]',
+    )!;
+    trigger.focus();
+    await click('[aria-label="Open navigation"]');
+    expect(
+      container.querySelector('[role="dialog"]')?.getAttribute("aria-label"),
+    ).toBe("Workspace navigation");
+    expect(document.body.style.overflow).toBe("hidden");
+    await clickText("Settings");
+    expect(container.querySelector(".sidebar.open")).toBeNull();
+    expect(container.textContent).toContain("Your workspace. Your rules.");
+    expect(document.activeElement).toBe(trigger);
+    await click('[aria-label="Open navigation"]');
+    await click('[aria-label="Dismiss navigation"]');
+    expect(container.querySelector(".sidebar.open")).toBeNull();
+    await click('[aria-label="Open navigation"]');
+    await act(async () =>
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+      ),
+    );
+    expect(container.querySelector(".sidebar.open")).toBeNull();
+    expect(document.body.style.overflow).not.toBe("hidden");
+  });
+  it("reuses the inbound event ID after a lost response and does not restore a processed reply after refresh fails", async () => {
+    const current = fixture("Recovery Depot");
+    current.workspace.lots[0].status = "recovering";
+    const requests: Array<Record<string, unknown>> = [];
+    let processed = false;
+    mockedApi.mockImplementation(((
+      path: string,
+      options?: { body?: unknown },
+    ) => {
+      if (path === "/session") return Promise.resolve({ user: current.user });
+      if (path === "/dashboard")
+        return processed
+          ? Promise.reject(new Error("Connection interrupted"))
+          : Promise.resolve(current);
+      if (path === "/inbound") {
+        requests.push(options?.body as Record<string, unknown>);
+        if (requests.length === 1)
+          return Promise.reject(new Error("Response lost"));
+        processed = true;
+        return Promise.resolve({
+          workspace: current.workspace,
+          result: { model: "test", steps: [] },
+        });
+      }
+      throw new Error(`Unexpected request ${path}`);
+    }) as typeof api);
+    await mount();
+    await clickText("Conversations");
+    const reply = "I can take 12 crates at £17 each.";
+    await clickText(reply);
+    expect(
+      container.querySelector<HTMLInputElement>('[aria-label="Buyer reply"]')
+        ?.value,
+    ).toBe(reply);
+    await click('[aria-label="Send buyer reply"]');
+    expect(requests).toHaveLength(2);
+    expect(requests[1].eventId).toBe(requests[0].eventId);
+    expect(
+      container.querySelector<HTMLInputElement>('[aria-label="Buyer reply"]')
+        ?.value,
+    ).toBe("");
+    expect(container.textContent).toContain(
+      "Your reply was processed, but the latest workspace could not be loaded.",
+    );
+  });
   it("ignores a dashboard response from the previous account after logout and a new login", async () => {
     const alpha = fixture("Alpha Depot");
     const beta = fixture("Beta Depot");

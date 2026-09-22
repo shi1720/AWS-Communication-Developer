@@ -1,0 +1,111 @@
+{
+  "documentedAt": "2026-09-22T08:41:14.386777+00:00",
+  "serviceChecksStartedAt": "2026-09-22T08:37:46.190Z",
+  "scope": "Read-only CLI, native AWS console inspection and official AWS documentation. No plan upgrade, payment submission, identity upload, support case or AWS resource deployment was performed.",
+  "region": "us-east-1",
+  "identity": {
+    "sts": "success",
+    "principalType": "root",
+    "accountIdOmitted": true
+  },
+  "accountManagement": {
+    "operation": "GetAccountInformation",
+    "AccountState": "ACTIVE",
+    "AccountCreatedDate": "2026-09-16T14:29:33+00:00"
+  },
+  "freeTier": {
+    "operation": "GetAccountPlanState",
+    "accountPlanType": "FREE",
+    "accountPlanStatus": "NOT_STARTED",
+    "remainingCredits": {
+      "amount": 100,
+      "unit": "USD"
+    }
+  },
+  "serviceChecks": {
+    "cloudformation:DescribeStacks": {
+      "result": "rejected",
+      "code": "OptInRequired"
+    },
+    "lambda:GetAccountSettings": {
+      "result": "rejected",
+      "code": "SubscriptionRequiredException"
+    },
+    "dynamodb:DescribeLimits": {
+      "result": "rejected",
+      "code": "SubscriptionRequiredException"
+    },
+    "sesv2:GetAccount": {
+      "result": "rejected",
+      "code": "SubscriptionRequiredException"
+    }
+  },
+  "providerMessage": "The AWS Access Key Id needs a subscription for the service",
+  "conclusion": {
+    "confirmed": "Sign-in works and Account Management reports an ACTIVE account, but the Free plan has not started and the required deployment/messaging services reject access for missing service subscription.",
+    "notDetermined": "Missing payment method observed. Whether completing payment verification alone will remove the service subscription failures has not yet been established.",
+    "paidPlanRequired": "Not established by these errors. Official documentation lists CloudFormation, Lambda, DynamoDB and SES among services available in its new Free signup experience, subject to experience-specific restrictions.",
+    "activationApi": "No documented standalone account-activation API was found in the Account Management operations. UpgradeAccountPlan accepts FREE or PAID in its schema, but documentation does not establish that setting FREE activates a NOT_STARTED plan. It was not called.",
+    "nextReadOnlyUIInspection": "Completed: identity verification is already Verified, while Payment preferences reports zero payment methods. The owner must complete payment verification; its effect on service access must then be checked.",
+    "timing": "The account was created six days before this check. A new verification submission can still take time; account creation age alone does not identify the outstanding step."
+  },
+  "freePlanConstraint": {
+    "requestedByUser": "Keep AWS Free plan",
+    "apnWarning": "AWS documents that joining AWS Partner Network automatically upgrades Free accounts to Paid. Do not enroll this account in APN under the current constraint. Existing membership through a partner organization must be established separately and truthfully.",
+    "advancedFeatures": "Activating advanced AWS features requires a prior upgrade and is irreversible. It was not attempted."
+  },
+  "localValidation": {
+    "npmAuditAll": "0 vulnerabilities",
+    "npmAuditProduction": "0 vulnerabilities",
+    "cdkSynth": "passed",
+    "cdkWarnings": [
+      "CloudFront minimumProtocolVersion is ignored with the default CloudFront certificate; a custom certificate is required for a configurable minimum TLS policy.",
+      "83 CDK feature flags are unconfigured."
+    ],
+    "codeChanges": "none during this activation investigation"
+  },
+  "sources": [
+    {
+      "title": "GetAccountPlanState API",
+      "url": "https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_freetier_GetAccountPlanState.html"
+    },
+    {
+      "title": "Account Management actions",
+      "url": "https://docs.aws.amazon.com/accounts/latest/APIReference/API_Operations.html"
+    },
+    {
+      "title": "UpgradeAccountPlan API schema",
+      "url": "https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_freetier_UpgradeAccountPlan.html"
+    },
+    {
+      "title": "Sign up for AWS advanced: verification and activation",
+      "url": "https://docs.aws.amazon.com/accounts/latest/reference/getting-started.html"
+    },
+    {
+      "title": "India customer verification and account activation",
+      "url": "https://docs.aws.amazon.com/accounts/latest/reference/managing-accounts-india.html"
+    },
+    {
+      "title": "Supported services in the new signup experience",
+      "url": "https://docs.aws.amazon.com/accounts/latest/reference/supported-services-sign-up-new.html"
+    },
+    {
+      "title": "Free plan constraints and APN automatic upgrade",
+      "url": "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/free-tier-plans.html"
+    },
+    {
+      "title": "Advanced feature activation requires upgrade",
+      "url": "https://docs.aws.amazon.com/accounts/latest/reference/activate-advanced-features.html"
+    },
+    {
+      "title": "Free-plan payment verification requirement",
+      "url": "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/free-tier-FAQ.html"
+    }
+  ],
+  "consoleInspection": {
+    "customerVerification": "Verified",
+    "paymentMethodsOnFile": 0,
+    "preparedPage": "Add payment method, Credit or debit card selected; no details entered or submission made",
+    "userHandoff": "Payment verification and any bank authentication requested. Keep AWS Free plan."
+  }
+}

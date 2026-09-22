@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "cut": "rehearsal",
+  "captureMethod": "Actual application screenshots captured with the computer-use tool",
+  "operatorReviewedScreenshots": false,
+  "syntheticData": true,
+  "urlLabel": "SecondCrate product walkthrough",
+  "scenes": [
+    {
+      "id": "01",
+      "shots": [
+        {
+          "path": "01-login.png",
+          "source": "actual-app",
+          "note": "Branded login or opening recovery overview"
+        }
+      ]
+    },
+    {
+      "id": "02",
+      "shots": [
+        {
+          "path": "02-intake.png",
+          "source": "actual-app",
+          "note": "Cancellation pasted and exact 40-crate fixture reviewed"
+        },
+        {
+          "path": "02-lot.png",
+          "source": "actual-app",
+          "note": "Saved lot with next-day London delivery at 13:30"
+        }
+      ]
+    },
+    {
+      "id": "03",
+      "shots": [
+        {
+          "path": "03-matches.png",
+          "source": "actual-app",
+          "note": "Launch result and consent exclusions"
+        },
+        {
+          "path": "03-conversations.png",
+          "source": "actual-app",
+          "note": "Real queued or simulated offer conversations"
+        }
+      ]
+    },
+    {
+      "id": "04",
+      "shots": [
+        {
+          "path": "04-maya.png",
+          "source": "actual-app",
+          "note": "12 crates at £17 with valid before-2pm condition"
+        },
+        {
+          "path": "04-floor.png",
+          "source": "actual-app",
+          "note": "Actual £14 rejection, matching the narrated order"
+        }
+      ]
+    },
+    {
+      "id": "05",
+      "shots": [
+        {
+          "path": "05-eight-left.png",
+          "source": "actual-app",
+          "note": "Ben confirmed and eight crates remain"
+        },
+        {
+          "path": "05-race.png",
+          "source": "actual-app",
+          "note": "Actual concurrent stock-lock result"
+        },
+        {
+          "path": "05-refresh.png",
+          "source": "actual-app",
+          "note": "Persisted result after a browser refresh"
+        }
+      ]
+    },
+    {
+      "id": "06",
+      "shots": [
+        {
+          "path": "06-ledger.png",
+          "source": "actual-app",
+          "note": "Three actual synthetic orders total £708"
+        },
+        {
+          "path": "06-impact.png",
+          "source": "actual-app",
+          "note": "£480 book cost, £228 spread and 200kg allocated"
+        }
+      ]
+    },
+    {
+      "id": "07",
+      "shots": [
+        {
+          "path": "07-runtime.png",
+          "source": "actual-app",
+          "note": "Accurate current runtime and simulated-delivery state"
+        }
+      ]
+    },
+    {
+      "id": "08",
+      "shots": [
+        { "path": "06-impact.png", "source": "actual-app", "weight": 0.35 },
+        { "card": "closing", "weight": 0.65 }
+      ]
+    }
+  ]
+}

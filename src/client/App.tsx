@@ -63,7 +63,7 @@ import { Produce } from "./Produce";
 import RaceProof from "./RaceProof";
 import BuyerForm from "./BuyerForm";
 import OperationsPanel from "./OperationsPanel";
-import { Button, Modal } from "./ui";
+import { Button, Modal, useDialogFocus } from "./ui";
 import { AuthScreen, AccountAction } from "./AuthScreens";
 
 type Page =
@@ -180,6 +180,16 @@ export default function App() {
     return { action, token };
   });
   const userRef = useRef<SessionUser | null>(null);
+  const navigationRef = useRef<HTMLElement>(null);
+  useDialogFocus(navigationRef, () => setMobileNav(false), mobileNav);
+  useEffect(() => {
+    const screen = window.matchMedia("(min-width: 641px)");
+    const closeOnDesktop = () => {
+      if (screen.matches) setMobileNav(false);
+    };
+    screen.addEventListener("change", closeOnDesktop);
+    return () => screen.removeEventListener("change", closeOnDesktop);
+  }, []);
   const sessionGeneration = useRef(0);
   const refreshSequence = useRef(0);
   function transitionSession(next: SessionUser | null) {
@@ -194,6 +204,9 @@ export default function App() {
     setEditingBuyer(undefined);
     setIntakeSource("");
     setSelectedLot(null);
+    setMobileNav(false);
+    setSearch("");
+    setToast("");
     setPage("overview");
   }
   useEffect(() => {
@@ -353,7 +366,30 @@ export default function App() {
   };
   return (
     <div className="app-shell">
-      <aside className={`sidebar ${mobileNav ? "open" : ""}`}>
+      {mobileNav && (
+        <button
+          className="navigation-backdrop"
+          aria-label="Dismiss navigation"
+          tabIndex={-1}
+          onClick={() => setMobileNav(false)}
+        />
+      )}
+      <aside
+        id="workspace-navigation"
+        className={`sidebar ${mobileNav ? "open" : ""}`}
+        ref={navigationRef}
+        tabIndex={-1}
+        role={mobileNav ? "dialog" : undefined}
+        aria-modal={mobileNav || undefined}
+        aria-label="Workspace navigation"
+      >
+        <button
+          className="icon-button navigation-close"
+          aria-label="Close navigation"
+          onClick={() => setMobileNav(false)}
+        >
+          <X size={20} />
+        </button>
         <Brand />
         <div className="workspace-select">
           <span className="workspace-logo">
@@ -398,21 +434,32 @@ export default function App() {
               <br />
               one conversation.
             </p>
-            <button onClick={() => setModal("how")}>
+            <button
+              onClick={() => {
+                setMobileNav(false);
+                setModal("how");
+              }}
+            >
               See how SecondCrate works
               <ArrowUpRight size={14} />
             </button>
           </div>
           <button
             className={`bottom-nav ${page === "activity" ? "active" : ""}`}
-            onClick={() => setPage("activity")}
+            onClick={() => {
+              setPage("activity");
+              setMobileNav(false);
+            }}
           >
             <FileText size={18} />
             Activity log
           </button>
           <button
             className={`bottom-nav ${page === "settings" ? "active" : ""}`}
-            onClick={() => setPage("settings")}
+            onClick={() => {
+              setPage("settings");
+              setMobileNav(false);
+            }}
           >
             <Settings2 size={18} />
             Settings
@@ -442,12 +489,14 @@ export default function App() {
           </div>
         </div>
       </aside>
-      <div className="main-shell">
+      <div className="main-shell" inert={mobileNav || undefined}>
         <header className="topbar">
           <div className="breadcrumb">
             <button
               className="mobile-menu icon-button"
               aria-label="Open navigation"
+              aria-expanded={mobileNav}
+              aria-controls="workspace-navigation"
               onClick={() => setMobileNav(!mobileNav)}
             >
               <Menu size={20} />
@@ -1369,6 +1418,10 @@ function Conversations({
     [showTrace, setShowTrace] = useState(true),
     [race, setRace] = useState(false);
   const chatEnd = useRef<HTMLDivElement>(null);
+  // A lost HTTP response must not turn a retry into a second allocation.
+  const pendingReply = useRef<{ fingerprint: string; eventId: string } | null>(
+    null,
+  );
   const buyer = w.buyers.find((b) => b.id === buyerId) || w.buyers[0];
   const messages = w.messages.filter(
     (m) => m.buyerId === buyer?.id && (!m.lotId || m.lotId === activeLot?.id),
@@ -1380,6 +1433,14 @@ function Conversations({
     if (!activeLot || !buyer || !value.trim() || sending) return;
     setSending(true);
     setText("");
+    const fingerprint = JSON.stringify([
+      buyer.id,
+      activeLot.id,
+      channel,
+      value.trim(),
+    ]);
+    if (pendingReply.current?.fingerprint !== fingerprint)
+      pendingReply.current = { fingerprint, eventId: crypto.randomUUID() };
     try {
       const r = await api<{ workspace: Workspace; result: AgentResult }>(
         "/inbound",
@@ -1390,12 +1451,19 @@ function Conversations({
             lotId: activeLot.id,
             channel,
             text: value,
-            eventId: crypto.randomUUID(),
+            eventId: pendingReply.current.eventId,
           },
         },
       );
+      pendingReply.current = null;
       setResult(r.result);
-      await onRefresh();
+      try {
+        await onRefresh();
+      } catch {
+        onError(
+          "Your reply was processed, but the latest workspace could not be loaded. Refresh the page to see the result before sending again.",
+        );
+      }
     } catch (e) {
       onError((e as Error).message);
       setText(value);
@@ -1481,6 +1549,7 @@ function Conversations({
                   onChange={(e) => {
                     setSelectedLot(e.target.value);
                     setResult(null);
+                    setText("");
                   }}
                 >
                   {w.lots.map((l) => (
@@ -1663,6 +1732,7 @@ function Conversations({
                     </span>
                     <select
                       aria-label="Reply channel"
+                      disabled={sending}
                       value={channel}
                       onChange={(e) => setChannel(e.target.value as Channel)}
                     >
@@ -2277,6 +2347,7 @@ function NewLot({
   };
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (extracting || busy) return;
     setBusy(true);
     setError("");
     const f = new FormData(e.currentTarget);
@@ -2348,13 +2419,14 @@ function NewLot({
             aria-label="Cancellation email text"
             placeholder="Paste the cancellation email here, or enter the lot details below…"
             value={source}
+            disabled={extracting || busy}
             onChange={(e) => setSource(e.target.value)}
             maxLength={10000}
           />
           <Button
             variant="small secondary"
             onClick={extract}
-            disabled={!source.trim()}
+            disabled={source.trim().length < 10 || busy}
             busy={extracting}
           >
             <Sparkles size={14} />
@@ -2362,7 +2434,10 @@ function NewLot({
           </Button>
           <small>Always review extracted details before releasing stock.</small>
         </div>
-        <div className="form-grid">
+        <fieldset
+          className="form-grid lot-fields"
+          disabled={extracting || busy}
+        >
           <label className="span-2">
             Product
             <input
@@ -2449,6 +2524,11 @@ function NewLot({
               required
             />
           </label>
+          <p className="form-timezone-note span-2">
+            Enter dates in your device time zone (
+            {Intl.DateTimeFormat().resolvedOptions().timeZone}). Saved dispatch
+            and delivery times are shown in London time.
+          </p>
           <label className="span-2">
             Product and handling notes
             <textarea
@@ -2460,7 +2540,7 @@ function NewLot({
               maxLength={2000}
             />
           </label>
-        </div>
+        </fieldset>
         <label className="checkbox-label">
           <input type="checkbox" name="safety" required />
           <span>
@@ -2478,7 +2558,7 @@ function NewLot({
           <Button variant="secondary" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" busy={busy}>
+          <Button type="submit" busy={busy} disabled={extracting}>
             Create recovery
             <ArrowRight size={16} />
           </Button>
