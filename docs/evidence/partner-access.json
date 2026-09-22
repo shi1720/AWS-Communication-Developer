@@ -14,5 +14,13 @@
     "providerMeaning": "This action requires an active AWS Partner benefit."
   },
   "conclusion": "No partner registration is linked to this AWS account. Membership through another organization or account remains unknown. No APN enrollment or ACE opportunity was created.",
-  "freePlanPreserved": true
+  "freePlanPreserved": true,
+  "userClarification": {
+    "recordedAt": "2026-09-22T09:59:33.682526+00:00",
+    "existingMembershipConfirmedByUser": true,
+    "createAceOpportunityAuthorized": true,
+    "planChangeConstraint": "Only if free; no paid usage commitment authorised",
+    "currentAccess": "Existing Partner Central login is open in Safari; authentication is required",
+    "opportunityCreated": false
+  }
 }
