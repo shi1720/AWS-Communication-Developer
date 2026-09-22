@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "product": "SecondCrate",
+  "checkedAt": "2026-09-22T07:32:24.673Z",
+  "readOnly": true,
+  "region": "eu-west-2",
+  "credentials": { "valid": true },
+  "channels": {
+    "emailConfigured": false,
+    "whatsappConfigured": false,
+    "smsConfigured": false,
+    "whatsappTemplateConfigured": false,
+    "liveSendsEnabled": false,
+    "inboundWorkspaceConfigured": false
+  },
+  "ses": {
+    "accountChecked": false,
+    "sender": { "configured": false, "verified": false },
+    "errorCode": "SubscriptionRequiredException"
+  },
+  "bedrock": { "configured": false, "invocationChecked": false }
+}

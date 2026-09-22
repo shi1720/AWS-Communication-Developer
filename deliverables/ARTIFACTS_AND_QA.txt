@@ -1,0 +1,52 @@
+SECONDCRATE - ARTIFACT INVENTORY AND QA RECORD
+Creator: Shivam Gupta | Reviewed: 22 September 2026
+
+DELIVERABLES
+SecondCrate-Pitch.pptx: editable eight-slide, 16:9 presentation.
+SecondCrate-Pitch.pdf: eight-page sharing copy of the final presentation.
+SecondCrate-Product-Technical-Brief.pdf: two-page product/architecture brief.
+SecondCrate-Video-Script.pdf: two-page exact 344-word release narration.
+SecondCrate-Teleprompter.html: offline narration, type/pace/theme controls,
+  three-minute timer, rehearsal default and gated verified-service cuts.
+../docs/assets/architecture.svg: original standalone vector architecture.
+../docs/RECORDING_GUIDE.md: Mac recording steps, scene timing, London fixture
+  and evidence gates. Hosted application URL remains a clear placeholder.
+
+SOURCES AND DESIGN
+Narration source: docs/VIDEO_SCRIPT.md. Research and commercial assumptions:
+  docs/RESEARCH.md and docs/BUSINESS_CASE.md. Creator: Shivam Gupta.
+Builder sources: scripts/generate_artifacts.mjs, generate_artifacts.py and
+  generate_teleprompter.mjs. Codex bundled Artifact Tool and ReportLab were used.
+Palette: #244c3a / #d4e9a8 / #f7f8f5 / #df865b. Font: Liberation Sans fallback.
+Cover artwork: repository-owned Produce.tsx. No third-party imagery or music.
+The deck diagrams and finance table remain editable native objects.
+For future deck revisions, set SECONDCRATE_DECK_FILENAME to a new filename.
+
+QA COMPLETED
+- Package integrity, eight-slide count, heading geometry, font policy, native
+  table presence, explicit quantity/sales arithmetic and final PPTX re-import
+  passed with no unresolved findings. PowerPoint desktop was not opened.
+- Exported with bundled LibreOffice, never the user's desktop LibreOffice.
+  Rendered and individually inspected all twelve final PDF pages and the SVG
+  after renaming. Corrected prior title/diagram overflow and arrow direction.
+- Matched all eight printed narration paragraphs to the exact Markdown source.
+  Checked exported PDFs for old branding and obsolete session-secret claims.
+- Reconciled 12 x GBP17 + 20 x GBP18 + 8 x GBP18 = GBP708; GBP480 book cost;
+  GBP228 spread before handling, delivery and software; 200 kg allocated.
+- Compared architecture with infra/stack.ts and Lambda/DynamoDB code. State uses
+  snapshot chunks plus CAS head, bounded to 2 MB. Only queued outbox sends retry.
+  Secrets Manager stores the CloudFront origin secret, not a session secret.
+- Teleprompter DOM checks passed source fidelity, evidence gates, type/theme,
+  fractional pace, play/pause/reset, scrolling and automatic stop at 3:00.
+  The standalone HTML loads no external resources or network dependencies.
+
+REMAINING BOUNDARIES
+HTML browser render review is pending: IAB was unavailable and Chrome CUA tab
+creation failed with unsupported auth method apikey. The AWS sign-in browser
+was left untouched. Use the offline HTML in a normal browser before recording.
+Cloud deployment, live model/provider validation and final video remain pending.
+All example companies, buyers and outcomes are synthetic. Pricing/pilot targets
+are hypotheses. No traction, collected cash, certified food safety or measured
+waste avoidance is claimed. Internal previews and validation receipts stay in
+.artifacts-build. The validated deck was renamed to its stable final filename
+without changing its bytes; the receipt records the matching SHA-256.

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "product": "SecondCrate",
+  "checkedAt": "2026-09-22T07:39:12.093Z",
+  "credentialsValid": true,
+  "accountPlanType": "FREE",
+  "accountPlanStatus": "NOT_STARTED",
+  "cloudFormation": {"regionsChecked":["us-east-1","eu-west-2"],"result":"OptInRequired"},
+  "ses": {"regionsChecked":["us-east-1","eu-west-2","ap-south-1"],"result":"SubscriptionRequiredException","messagesSent":0},
+  "bedrock": {"region":"us-east-1","modelId":"amazon.nova-lite-v1:0","invocationAttempted":true,"result":"AccessDeniedException","modelOutputReceived":false},
+  "console": {"cloudFormationRedirect":"Complete your account setup","registrationPath":"https://signup.aws.amazon.com/billing/signup?type=resubscribe#/urp"},
+  "deploymentAttempted": false,
+  "deployedUrl": null,
+  "explanation": "Authentication was restored, but the account is not activated for required services. This records a failed verification attempt, not runtime proof. No credentials, account ID or personal contact data are included."
+}

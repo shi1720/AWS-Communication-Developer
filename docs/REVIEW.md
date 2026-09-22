@@ -1,0 +1,70 @@
+# Independent implementation and submission review
+
+Reviewed 22 September 2026 against the supplied AWS CDS hackathon rubric. This is an internal engineering review of the code and local evidence, not an AWS endorsement, penetration test, actual judge result, customer validation or prediction of winning.
+
+## Evidence available
+
+- TypeScript compilation passes.
+- Full local suite at the review checkpoint: **100 tests across twelve files passed**. This count will change as further review fixes land; the authoritative count is the latest `npm test` output.
+- `npm run infra:synth` succeeds against the built frontend. Separate CDK assertions check private storage, retained state, PITR/TTL, SQS partial failures, DLQ, alarms, origin verification, CSP and scheduled outbox recovery.
+- AWS adapters use actual SDK command classes, exercised with controlled mocked clients. These tests prove request construction and failure handling, not AWS acceptance or channel provisioning.
+- AWS credentials have been restored. A read-only SDK preflight confirms authentication, but SES returns `SubscriptionRequiredException` in `eu-west-2`; account/service activation is still required. A controlled Bedrock invocation in us-east-1 returned AccessDeniedException and no output. CloudFormation is also blocked by account activation. No deployed URL, actual Bedrock response, real CDS delivery receipt or WhatsApp approval was verified in this review. See [redacted preflight evidence](evidence/aws-preflight-2026-09-22.json).
+- A demo script, commercial assumptions and submission material exist. The final narrated video and ACE opportunity are not verified here.
+
+## Highest-impact findings and disposition
+
+| Severity | Finding | Disposition and evidence |
+| --- | --- | --- |
+| P1 | Concurrent email verification/password reset could overwrite the whole user record and restore an old password/session version. | **Fixed.** Account updates now use serialized local mutations or DynamoDB revision CAS. Concurrent verification plus two resets preserves verification and advances session version twice. Covered by backend tests and `tests/aws-auth.test.ts`. |
+| P1 | A process crash after committing outbound messages but before sending could leave them queued forever; a repeated launch was rejected. | **Fixed.** A scoped EventBridge rule drains the configured live workspace every minute. Replayed inbound work also resumes the outbox. Unknown sends remain excluded. Covered by Lambda and infrastructure tests. |
+| P1 | A delivery receipt arriving before `SendEmail`/`SendTextMessage`/`SendWhatsAppMessage` returned could be silently lost, or subsequently downgraded to sent. | **Fixed.** Correlation travels in SES tags, SMS context and WhatsApp opaque callback data. Domain receipt handling can attach the provider ID before the send call returns; terminal receipt states are preserved and repeated receipts do not duplicate audit entries. |
+| P1 | A single 300 KB DynamoDB workspace could fill during ordinary use, causing errors and preventing future receipt or opt-out writes. | **Mitigated structurally.** Immutable 190 KB chunks plus an atomic manifest replace the single-item workspace. Tests cover >400 KB UTF-8 content, coherent readers across a concurrent generation change, failed CAS without orphan writes or premature expiry, migration and corruption detection. Normal writes stop at 1.5 MB; receipts and essential suppression have reserved headroom below a hard 2,000,000-byte limit. This is bounded pilot storage, not unlimited scale. |
+| P1 | With multiple active lots, generic buyer replies were acknowledged and discarded when routing was ambiguous. | **Fixed.** WhatsApp quoted replies correlate to provider IDs; email subjects and exact lot references disambiguate. Unresolved messages become review-required audit events, with no inventory mutation. Exact opt-outs work independently of active offers. |
+| P1 | An initial WhatsApp surplus offer could use free-form text inside an existing customer window, bypassing the approved marketing-template requirement. | **Fixed.** Both domain sending and the adapter enforce a template for `purpose=offer`. Reply windows use actual WhatsApp timestamps; email/SMS do not reopen that window. |
+| P1 | Reordered buyer negotiation messages could apply older terms after a newer message. | **Fixed.** Backend blocks older or equal-timestamp accept/negotiate/decline mutations against the latest persisted inbound message for the same buyer and lot, while retaining audit evidence and always applying opt-outs. A regression test covers this ordering boundary. WhatsApp provides message time; SMS uses trusted SNS publication time, which cannot reconstruct customer ordering across carrier delays. |
+| P2 | CDN edge IPs could collapse all authentication attempts into one rate-limit bucket; static HTML lacked an explicit CSP. | **Fixed.** CloudFront overwrites the viewer-IP header; Lambda trusts it only after origin-secret verification. Static and API responses have a CSP compatible with local fonts and required inline layout styles. |
+| P2 | Duplicate contact records could make inbound replies unroutable and prevent a STOP from suppressing the destination. | **Fixed.** Live buyer creation/update checks uniqueness. Exact opt-out also suppresses every matching legacy contact record. |
+| P2 | Registration compensation could delete a user after another authenticated request repaired the missing workspace. | **Fixed.** A failed workspace setup preserves the protected account and returns `WORKSPACE_SETUP_PENDING`; a later password-authenticated login repairs it. A regression test covers the failure/recovery path. |
+
+## Final interaction and live-message review
+
+The final suite passes 100 tests across twelve files. Additional fixes cover stale dashboard responses crossing account sessions, reset-password logout recovery, StrictMode initialization, fresh consent when a recipient address changes, case-insensitive buyer categories, Unicode apostrophes in suggested replies, and reconfirmation when an implicit YES races a changed offer. Dialogs retain focus across polling updates, and the stock-race display preserves its starting scenario after refresh.
+
+Bedrock now receives the same buyer's bounded recent conversation across channels plus current pending terms, while excluding other buyers' conversations and contact fields. The canonical nine-variable WhatsApp MARKETING template includes London dates and the lot reference; tests verify that the stored message matches the actual template parameters. SecondCrate's new SC references are covered by inbound-routing tests.
+
+Both the development proxy and compiled server passed the nine-check HTTP scenario: three orders, forty crates and £708, duplicate replay, concurrent final-stock requests and logout revocation. `npm audit` reports zero vulnerabilities in the installed dependency graph at this checkpoint. These checks still do not replace real account/channel verification.
+
+## Remaining release gates
+
+**P0 — Required runtime evidence is absent.** Resolve account/service activation using the restored AWS identity, then deploy and capture the CloudFormation outputs and use the resulting project URL. Execute the full workflow with an actual supported Bedrock model and at least one configured CDS channel. Preserve redacted provider message IDs and receipts. A hosted rehearsal alone does not establish the hackathon's runtime CDS requirement.
+
+**P0 — Submission eligibility artifacts need the entrant.** Confirm AWS Partner eligibility and create a truthful ACE opportunity with the required campaign code. Record and publish the approximately three-minute video, add the repository/deployed URL, and complete the Devpost entry. These are not code defects, but missing them can invalidate a strong build.
+
+**P1 — Account-specific messaging setup remains untested.** SES identity and sandbox/production status, receipt configuration, WhatsApp business/number verification and approved marketing template, SMS origination registration, country protections and SNS event destinations require real account verification. Test failure receipts, opt-out, duplicate delivery and end-to-end ordering using controlled opted-in contacts.
+
+**P2 — Bounded aggregate and manual operations remain.** The 2 MB snapshot cap and 100-lot/100-buyer limits suit a bounded pilot. Full archive export exists; long-running/high-volume use needs an explicit archive lifecycle and partitioned inventory, inbox, outbox and audit records. Snapshot transactions rewrite the aggregate and retain replaced generations for seven days; measure their real write/storage cost. Do not describe this version as unlimited multi-tenant infrastructure.
+
+**P2 — Unknown sends require operator reconciliation.** A lost provider response can mean the message was delivered. The app intentionally prevents automatic resend and now exposes explicit evidence-backed reconciliation with an audit trail. Exercise that interface against a controlled unknown outcome before a customer pilot. Do not claim exactly-once delivery across an external messaging API.
+
+**P2 — Operational validation remains.** Confirm alarm subscriptions, exercise a DLQ redrive, restore a copy through DynamoDB PITR, rotate the origin-verification secret through a coordinated deployment, and run a small concurrency/latency test. None of these outcomes should be inferred from successful synthesis.
+
+## Provisional rubric assessment
+
+The scores below are evidence-limited review estimates, not final judge predictions. Missing eligibility items override any numerical score.
+
+| Criterion | Provisional score | Evidence and next improvement |
+| --- | ---: | --- |
+| Potential value / impact | 16 / 20 | A specific buyer and time-sensitive workflow; contribution arithmetic distinguishes revenue, profit and allocated produce. Improve with one wholesaler interview and a measured baseline/pilot commitment. |
+| Creativity | 8 / 10 | Recovery of a cancelled wholesale lot through existing buyers and routes is a clear, memorable story. Position against existing order-capture/surplus businesses fairly; novelty is the combined workflow, not invention of food redistribution. |
+| Technical execution | 29 / 40 | Three real CDS adapters, constrained Bedrock tools, deterministic authority, atomic inventory, durable outbox/inbound, authentication and reproducible infrastructure. Actual AWS execution, provider setup and operational evidence remain the largest gaps. |
+| Functionality | 5 / 10 | Local end-to-end behavior and adverse-path tests pass. Real channel delivery, live model behavior, load and recovery are not yet demonstrated. |
+| Demo presentation | 15 / 20 | A simple 40-crate narrative, visible trace, honest economics and a prepared script. The final three-minute narrated recording and real-cloud evidence are still required. |
+| **Total** | **73 / 100** | A prioritization tool for the remaining work, not a statement that the project has been judged. |
+
+## Highest-return next evidence
+
+1. Deploy the actual application and record a Bedrock decision → validated inventory commit → SES acceptance/receipt. Use the SES mailbox simulator if the sender is verified but destination onboarding is pending; clearly label simulator evidence.
+2. Complete one approved WhatsApp template → buyer reply → valid negotiation → cross-channel email confirmation. Show consent exclusion and below-floor rejection in the same demo.
+3. Repeat the same provider event and race two buyer acceptances against limited stock; show one inventory total and no duplicate order.
+4. Ask one target wholesaler whether the workflow, contact permissions, existing route assumption and £299 price could work. Keep hypothetical figures separate from actual feedback.
+5. Record the final demo only after the live workflow is stable, with the UI and provider evidence readable at normal playback speed.

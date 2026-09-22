@@ -1,0 +1,36 @@
+name: Verify SecondCrate
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run infra:synth -- --quiet
+      - name: Exercise the compiled application over HTTP
+        shell: bash
+        run: |
+          set -euo pipefail
+          PORT=3379 HOST=127.0.0.1 DATA_DIR="$RUNNER_TEMP/secondcrate-data" npm start > "$RUNNER_TEMP/secondcrate-server.log" 2>&1 &
+          app_pid=$!
+          trap 'kill "$app_pid" 2>/dev/null || true' EXIT
+          node --input-type=module -e 'for (let i=0;i<50;i++){try{const r=await fetch("http://127.0.0.1:3379/api/health");if(r.ok)process.exit(0)}catch{}await new Promise(r=>setTimeout(r,200))}process.exit(1)'
+          SECONDCRATE_URL=http://127.0.0.1:3379 npm run smoke
+      - uses: actions/upload-artifact@v4
+        with:
+          name: http-verification-evidence
+          path: docs/evidence/http-smoke.json
+      - run: npm audit --audit-level=high

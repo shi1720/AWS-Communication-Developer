@@ -1,0 +1,31 @@
+{
+  "product": "SecondCrate",
+  "verifiedAt": "2026-09-22T07:55:10.424Z",
+  "scope": "local implementation checkpoint",
+  "typecheck": "passed",
+  "tests": {
+    "passed": 100,
+    "failed": 0,
+    "files": 12
+  },
+  "productionBuild": "passed",
+  "cloudFormationSynthesis": "passed",
+  "dependencyAudit": {
+    "vulnerabilities": 0,
+    "includesDevelopmentDependencies": true
+  },
+  "httpEndToEnd": {
+    "developmentProxy": "passed",
+    "compiledServer": "passed",
+    "checksPerRun": 9,
+    "crates": 40,
+    "orders": 3,
+    "recoveredSalesGBP": 708,
+    "externalMessagesSent": 0
+  },
+  "cloudDeployment": "blocked_account_activation",
+  "liveBedrock": "attempted_access_denied_no_output",
+  "liveCDS": "not_verified",
+  "browserVisualReview": "login_and_overview_before_rename_reviewed; full_post_rename_review_blocked_by_computer_use_timeout",
+  "documentVisualReview": "12 final PDF pages and architecture SVG reviewed"
+}

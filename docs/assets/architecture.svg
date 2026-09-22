@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 780" role="img" aria-labelledby="title desc">
+<title id="title">SecondCrate deployable AWS architecture</title>
+<desc id="desc">CloudFront serves private S3 assets and connects the browser to API Gateway and Lambda. Lambda uses Bedrock, a versioned DynamoDB workspace, and SES or End User Messaging. Inbound events pass through SNS and SQS with a dead-letter queue. Cloud validation is pending.</desc>
+<rect width="1200" height="780" fill="#f7f8f5"/>
+<style>text{font-family:Liberation Sans,Arial,sans-serif;fill:#244c3a}.title{font-size:32px;font-weight:700}.body{font-size:19px}.label{font-size:26px;font-weight:700}.sub{font-size:18px}</style>
+<defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="#617065"/></marker></defs>
+<text x="40" y="53" class="title">SecondCrate deployable AWS architecture</text>
+<text x="40" y="89" class="body">Cloud validation pending. Provider events currently route to one configured live workspace.</text>
+<polyline points="150,238 150,306" fill="none" stroke="#617065" stroke-width="2.8" marker-end="url(#a)"/>
+<polyline points="260,352 350,352 350,191 450,191" fill="none" stroke="#617065" stroke-width="2.8" marker-end="url(#a)"/>
+<polyline points="150,399 150,473" fill="none" stroke="#617065" stroke-width="2.8" marker-end="url(#a)"/>
+<polyline points="585,238 585,306" fill="none" stroke="#617065" stroke-width="2.8" marker-end="url(#a)"/>
+<polyline points="720,339 806,339 806,191 880,191" fill="none" stroke="#617065" stroke-width="2.8" marker-end="url(#a)"/>
+<polyline points="720,367 880,367" fill="none" stroke="#617065" stroke-width="2.8" marker-end="url(#a)"/>
+<polyline points="585,399 585,473" fill="none" stroke="#617065" stroke-width="2.8" marker-end="url(#a)"/>
+<polyline points="938,399 938,473" fill="none" stroke="#617065" stroke-width="2.8" marker-end="url(#a)"/>
+<polyline points="996,519 1044,519" fill="none" stroke="#617065" stroke-width="2.8" marker-end="url(#a)"/>
+<polyline points="1102,566 1102,602 800,602 800,399 720,399" fill="none" stroke="#617065" stroke-width="2.8" marker-end="url(#a)"/>
+<polyline points="1102,566 1102,637" fill="none" stroke="#617065" stroke-width="2.8" marker-end="url(#a)"/>
+<rect x="40" y="145" width="220" height="93" rx="5" fill="#f7f8f5" stroke="#d8ded5"/>
+<text x="57" y="181" class="label" style="fill:#244c3a">Browser</text>
+<text x="57" y="213" class="sub" style="fill:#244c3a">Authenticated operator</text>
+<rect x="40" y="306" width="220" height="93" rx="5" fill="#f7f8f5" stroke="#d8ded5"/>
+<text x="57" y="342" class="label" style="fill:#244c3a">CloudFront</text>
+<text x="57" y="374" class="sub" style="fill:#244c3a">HTTPS application entry</text>
+<rect x="40" y="473" width="220" height="93" rx="5" fill="#f7f8f5" stroke="#d8ded5"/>
+<text x="57" y="509" class="label" style="fill:#244c3a">Private S3</text>
+<text x="57" y="541" class="sub" style="fill:#244c3a">Web application assets</text>
+<rect x="450" y="145" width="270" height="93" rx="5" fill="#f7f8f5" stroke="#d8ded5"/>
+<text x="467" y="181" class="label" style="fill:#244c3a">HTTP API</text>
+<text x="467" y="213" class="sub" style="fill:#244c3a">API Gateway</text>
+<rect x="450" y="306" width="270" height="93" rx="5" fill="#244c3a" stroke="#d8ded5"/>
+<text x="467" y="342" class="label" style="fill:#ffffff">Lambda</text>
+<text x="467" y="374" class="sub" style="fill:#ffffff">Validated order service</text>
+<rect x="450" y="473" width="270" height="93" rx="5" fill="#d4e9a8" stroke="#d8ded5"/>
+<text x="467" y="509" class="label" style="fill:#244c3a">DynamoDB</text>
+<text x="467" y="541" class="sub" style="fill:#244c3a">Snapshot chunks + CAS head</text>
+<rect x="880" y="145" width="280" height="93" rx="5" fill="#f7f8f5" stroke="#d8ded5"/>
+<text x="897" y="181" class="label" style="fill:#244c3a">Bedrock</text>
+<text x="897" y="213" class="sub" style="fill:#244c3a">Constrained intent proposal</text>
+<rect x="880" y="306" width="280" height="93" rx="5" fill="#d4e9a8" stroke="#d8ded5"/>
+<text x="897" y="342" class="label" style="fill:#244c3a">AWS CDS</text>
+<text x="897" y="374" class="sub" style="fill:#244c3a">SES / WhatsApp / SMS</text>
+<rect x="880" y="473" width="116" height="93" rx="5" fill="#f7f8f5" stroke="#d8ded5"/>
+<text x="897" y="509" class="label" style="fill:#244c3a">SNS</text>
+<text x="897" y="541" class="sub" style="fill:#244c3a">Topic</text>
+<rect x="1044" y="473" width="116" height="93" rx="5" fill="#f7f8f5" stroke="#d8ded5"/>
+<text x="1061" y="509" class="label" style="fill:#244c3a">SQS</text>
+<text x="1061" y="541" class="sub" style="fill:#244c3a">Queue</text>
+<rect x="1044" y="637" width="116" height="82" rx="5" fill="#f7f8f5" stroke="#d8ded5"/>
+<text x="1061" y="673" class="label" style="fill:#244c3a">DLQ</text>
+<text x="1061" y="705" class="sub" style="fill:#244c3a">Review</text>
+<text x="40" y="640" class="label">Operational controls</text>
+<text x="40" y="678" class="body">Secrets Manager: CloudFront origin secret. CloudWatch: logs and alarms.</text>
+<text x="40" y="710" class="body">EventBridge retries queued outbox sends. Unknown outcomes require review.</text>
+<text x="40" y="756" class="sub">SES inbound MIME uses private S3. DynamoDB workspace limit: 2 MB. Source: infra/stack.ts and src/server/lambda.ts.</text>
+</svg>

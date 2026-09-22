@@ -1,0 +1,74 @@
+{
+  "verifiedAt": "2026-09-22T07:54:34.642Z",
+  "target": "http://127.0.0.1:5279",
+  "mode": "isolated-demo",
+  "externalMessagesSent": 0,
+  "checks": [
+    "served frontend",
+    "same-origin session cookie through real HTTP",
+    "launch matched buyers",
+    "cross-channel acceptance",
+    "duplicate event replay",
+    "parallel final-stock claims",
+    "persisted stock=0, orders=3, crates=40, totalGBP=708",
+    "all outbound messages simulated",
+    "logout revokes session"
+  ],
+  "requests": [
+    {
+      "path": "/auth/demo",
+      "status": 200,
+      "latencyMs": 21
+    },
+    {
+      "path": "/dashboard",
+      "status": 200,
+      "latencyMs": 3
+    },
+    {
+      "path": "/lots/lot_tomatoes/launch",
+      "status": 200,
+      "latencyMs": 24
+    },
+    {
+      "path": "/inbound",
+      "status": 200,
+      "latencyMs": 10
+    },
+    {
+      "path": "/inbound",
+      "status": 200,
+      "latencyMs": 9
+    },
+    {
+      "path": "/inbound",
+      "status": 200,
+      "latencyMs": 4
+    },
+    {
+      "path": "/inbound",
+      "status": 200,
+      "latencyMs": 9
+    },
+    {
+      "path": "/inbound",
+      "status": 200,
+      "latencyMs": 12
+    },
+    {
+      "path": "/dashboard",
+      "status": 200,
+      "latencyMs": 4
+    },
+    {
+      "path": "/auth/logout",
+      "status": 200,
+      "latencyMs": 4
+    },
+    {
+      "path": "/dashboard",
+      "status": 401,
+      "latencyMs": 2
+    }
+  ]
+}
