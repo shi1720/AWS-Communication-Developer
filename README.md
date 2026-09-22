@@ -16,9 +16,7 @@ SecondCrate gives that lot a second destination. The operator releases the stock
 
 **Try the hosted rehearsal:** [secondcrate.web.app](https://secondcrate.web.app). Choose **Explore the interactive demo** for an isolated workspace with fictional buyers and simulated messaging.
 
-**Watch the product:** [2:46 narrated demonstration with captions](https://secondcrate.web.app/demo.html). It uses actual application captures, edited for clarity, and disclosed OpenAI cedar narration.
-
-**Watch the narrated walkthrough:** [2:46 captioned demo](https://secondcrate.web.app/demo.html), using actual hosted application captures. [Download the MP4](deliverables/SecondCrate-Demo.mp4).
+**Watch the product:** [Public YouTube demonstration](https://youtu.be/Ox6BG9KwP7w) or the [direct video page](https://secondcrate.web.app/demo.html). The 2:46 walkthrough uses actual hosted application captures, captions and disclosed OpenAI cedar narration. [Download the MP4](deliverables/SecondCrate-Demo.mp4).
 
 **Current verification:** 127 automated tests and the production build pass. The Firebase-hosted release passed the complete HTTP recovery workflow plus session, tenant-isolation and persistence checks. Its API runs on Cloud Run with a dedicated Firestore database. AWS deployment and live Bedrock/CDS verification remain blocked under the current AWS Free plan; no paid-plan upgrade was authorised. See the [hosted deployment evidence](docs/evidence/firebase-deployment.json) and [final review](docs/FINAL_REVIEW.md).
 
