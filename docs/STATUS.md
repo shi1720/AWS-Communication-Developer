@@ -21,6 +21,10 @@ Checkpoint: 22 September 2026. Try the hosted application at **https://secondcra
 
 This preview is functional and reviewable. It is not a verified AWS hackathon deployment or a claim of production readiness. See [FINAL_REVIEW.md](FINAL_REVIEW.md) for the evidence-based rubric assessment and operational limitations.
 
+## Scheduled follow-up: 23 September 2026
+
+At 10:31 UTC, more than 24 hours after the confirmed Paid upgrade, a fresh SES console request still redirected to **Complete your account setup**. The CLI preflight and five service checks could not authenticate, so their failures do not establish the current API enrollment state. Yesterday's plan/credit values and service errors remain historical evidence. No deployment, model invocation or external send was attempted. The [updated support request](AWS_SUPPORT_DRAFT.md) is ready for review and has not been sent. See the [sanitized follow-up record](evidence/aws-followup-20260923.json).
+
 ## Remaining AWS and entrant requirements
 
 1. Allow AWS activation to complete after identity/payment verification and the authorised Paid upgrade on 22 September. The console confirmed the upgrade succeeded. Its registration-resume link still returns to Console Home without another form; the 10:10 UTC SES check returned a missing-service-subscription error. AWS says activation can take up to 24 hours. If access remains blocked after that period, use the account-activation support path; [AWS_SUPPORT_DRAFT.md](AWS_SUPPORT_DRAFT.md) contains a prepared message, not a submitted case. The account is already Paid; another upgrade is not an activation repair.

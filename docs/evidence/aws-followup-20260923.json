@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-09-23T10:30:47.442811+00:00",
+  "region": "us-east-1",
+  "readOnly": true,
+  "checks": {
+    "cloudformation": {
+      "accessible": false,
+      "errorCode": "CredentialOrCliError",
+      "liveServiceStateVerified": false
+    },
+    "lambda": {
+      "accessible": false,
+      "errorCode": "CredentialOrCliError",
+      "liveServiceStateVerified": false
+    },
+    "dynamodb": {
+      "accessible": false,
+      "errorCode": "CredentialOrCliError",
+      "liveServiceStateVerified": false
+    },
+    "ses": {
+      "accessible": false,
+      "errorCode": "CredentialOrCliError",
+      "liveServiceStateVerified": false
+    },
+    "bedrockNova": {
+      "accessible": false,
+      "errorCode": "CredentialOrCliError",
+      "liveServiceStateVerified": false
+    }
+  },
+  "externalMessagesSent": 0,
+  "modelInvocations": 0,
+  "preflight": {
+    "checkedAt": "2026-09-23T10:30:24.502Z",
+    "credentialsValid": false,
+    "errorCode": "CredentialsProviderError",
+    "readiness": "credentials_invalid",
+    "accountPlanChecked": false
+  },
+  "browserCheck": {
+    "checkedAt": "2026-09-23T10:31:05Z",
+    "requestedService": "SES",
+    "requestedRegion": "us-east-1",
+    "result": "Redirected to Complete your account setup",
+    "providerPage": "https://signup.aws.amazon.com/billing/signup/incomplete",
+    "activationWindowText": "It might take up to 24 hours to fully activate your AWS services",
+    "moreThan24HoursSinceConfirmedUpgrade": true
+  },
+  "interpretation": "Fresh console evidence confirms SES remains blocked by account setup. API checks failed locally at credentials, so earlier service-subscription errors, account plan status, remaining credit amount and model authorization were not reverified in this run.",
+  "support": {
+    "draft": "docs/AWS_SUPPORT_DRAFT.md",
+    "submitted": false,
+    "requiresExplicitSendAuthorization": true
+  }
+}
