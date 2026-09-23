@@ -1,6 +1,6 @@
 # SecondCrate release status
 
-Checkpoint: 22 September 2026. Try the hosted application at **https://secondcrate.web.app** and choose **Explore the interactive demo**. This is an isolated rehearsal with synthetic businesses and simulated messaging.
+Checkpoint: 23 September 2026. Product and hosting checks are from 22 September; the AWS account was checked again on 23 September. Try the hosted application at **https://secondcrate.web.app** and choose **Explore the interactive demo**. This is an isolated rehearsal with synthetic businesses and simulated messaging.
 
 | Area | Verified state |
 | --- | --- |
@@ -13,7 +13,7 @@ Checkpoint: 22 September 2026. Try the hosted application at **https://secondcra
 | Financial display | £708 booked sales, £480 book cost, £228 product spread before fulfilment/software, 200 kg allocated; all synthetic |
 | Visual checks | Hosted login, intake dialog, buyer network, conversations, stock-lock result, ledger, impact and settings inspected. Browser viewports at 320, 390 and 1440 px verified. Fixed intake fields clipping on narrow screens; mobile order confirmation and refresh persistence passed. Physical mobile-device testing remains unperformed |
 | Security/build | Both dependency audits report zero vulnerabilities. CDK synthesis passes. Password verification and recovery require SES, which is not connected in the public preview |
-| AWS account | Sign-in and identity verification succeed; the owner completed payment verification and the console confirms a saved default payment method. The registration-resume link returns to Console Home. The owner explicitly authorised the permanent Paid-plan upgrade and AWS confirmed success. At 10:10 UTC the API reports PAID / NOT_STARTED and USD 100 in credits, with service activation still unavailable |
+| AWS account | Fresh CLI sign-in succeeds; customer verification is Verified and Basic Support is selected. At 10:38 UTC on 23 September, the API reports PAID / NOT_STARTED and USD 100 in credits. Billing currently lists zero saved payment methods and Manual bill payments. The registration-resume link returns to Console Home; service access remains blocked |
 | AWS runtime | CloudFormation returns OptInRequired; Lambda, DynamoDB and SES return SubscriptionRequiredException. Bedrock/CDS runtime success and AWS deployment are not verified |
 | Video | 2:46 narrated product walkthrough, actual hosted application captures, burned captions and matching SRT/VTT. It explicitly identifies the rehearsal and pending AWS verification |
 | Other deliverables | Editable eight-slide pitch, pitch PDF, technical brief, printable script, teleprompter, AWS architecture and actual preview architecture, story and YouTube publishing copy |
@@ -21,13 +21,17 @@ Checkpoint: 22 September 2026. Try the hosted application at **https://secondcra
 
 This preview is functional and reviewable. It is not a verified AWS hackathon deployment or a claim of production readiness. See [FINAL_REVIEW.md](FINAL_REVIEW.md) for the evidence-based rubric assessment and operational limitations.
 
+## Corrected investigation: 23 September 2026, 10:38 UTC
+
+CLI sign-in now works. An incorrectly copied authorization URL caused the earlier HTTP 400; using the exact URL and the normal local sign-in flow restored credentials. Fresh APIs confirm PAID / NOT_STARTED with USD 100 remaining credits and service-subscription failures. Lambda, SES and CloudFormation fail in both us-east-1 and ap-south-1, which are enabled regions. Customer verification is **Verified** and **Basic Support** is selected. Billing currently shows **Payment methods (0)** and **Manual bill payments**, superseding the earlier saved-payment checkpoint. The registration-resume link still returns to Console Home. The payment discrepancy needs resolving; it is not proof that an earlier verification failed. No payment, support message, model call or deployment was performed. See the [corrected audit](evidence/aws-recheck-20260923.json) and [updated support draft](AWS_SUPPORT_DRAFT.md).
+
 ## Scheduled follow-up: 23 September 2026
 
 At 10:31 UTC, more than 24 hours after the confirmed Paid upgrade, a fresh SES console request still redirected to **Complete your account setup**. The CLI preflight and five service checks could not authenticate, so their failures do not establish the current API enrollment state. Yesterday's plan/credit values and service errors remain historical evidence. No deployment, model invocation or external send was attempted. The [updated support request](AWS_SUPPORT_DRAFT.md) is ready for review and has not been sent. See the [sanitized follow-up record](evidence/aws-followup-20260923.json).
 
 ## Remaining AWS and entrant requirements
 
-1. Allow AWS activation to complete after identity/payment verification and the authorised Paid upgrade on 22 September. The console confirmed the upgrade succeeded. Its registration-resume link still returns to Console Home without another form; the 10:10 UTC SES check returned a missing-service-subscription error. AWS says activation can take up to 24 hours. If access remains blocked after that period, use the account-activation support path; [AWS_SUPPORT_DRAFT.md](AWS_SUPPORT_DRAFT.md) contains a prepared message, not a submitted case. The account is already Paid; another upgrade is not an activation repair.
+1. Resolve the current payment-method discrepancy. Customer verification and Basic Support are confirmed, but Billing lists zero saved payment methods. The Add payment method page offers refundable INR 2 verification that needs the owner's payment details and bank approval. If successful payment verification is already recorded, ask AWS Account and Billing Support to identify the remaining enrollment requirement using [AWS_SUPPORT_DRAFT.md](AWS_SUPPORT_DRAFT.md). The account is already Paid; another upgrade is not an activation repair. No support message is authorised yet.
 2. The entrant confirms existing AWS Partner membership but does not have its sign-in credentials. An authorised administrator of that organisation must grant access or create the ACE record using [the prepared draft](ACE_OPPORTUNITY_DRAFT.md). Read-only checks returned an empty partner list for this account and previously rejected ACE listing with INCOMPATIBLE_BENEFIT_AWS_PARTNER_STATE. These results do not establish whether the entrant belongs to a partner through a different organisation/account. Do not create a duplicate partner registration.
 3. After service access is restored, run `scripts/aws-preflight.mjs` with an explicit profile and region, deploy through [AWS_DEPLOYMENT.md](AWS_DEPLOYMENT.md), and run the same HTTP/security workflow against AWS.
 4. Verify a real Bedrock invocation and qualifying CDS operation. Keep provider acceptance distinct from confirmed delivery. WhatsApp-prize claims require a real EUM Social inbound/outbound flow.

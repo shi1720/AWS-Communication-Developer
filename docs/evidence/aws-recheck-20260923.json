@@ -1,0 +1,71 @@
+{
+  "checkedAt": "2026-09-23T10:38:47.831351+00:00",
+  "region": "us-east-1",
+  "readOnly": true,
+  "checks": {
+    "cloudformation": {
+      "accessible": false,
+      "errorCode": "OptInRequired"
+    },
+    "lambda": {
+      "accessible": false,
+      "errorCode": "SubscriptionRequiredException"
+    },
+    "dynamodb": {
+      "accessible": false,
+      "errorCode": "SubscriptionRequiredException"
+    },
+    "ses": {
+      "accessible": false,
+      "errorCode": "SubscriptionRequiredException"
+    },
+    "bedrockNova": {
+      "accessible": true,
+      "authorizationStatus": "NOT_AUTHORIZED"
+    },
+    "partnerCentral": {
+      "accessible": true,
+      "partnerCount": 0
+    }
+  },
+  "authentication": {
+    "localSignInCompleted": true,
+    "credentialsValid": true,
+    "previousRemote400Cause": "The manually copied authorization URL omitted a colon in the devtools client ARN. Correcting the URL and completing local sign-in restored CLI access.",
+    "rawCredentialsRecorded": false
+  },
+  "accountPlan": {
+    "checkedAt": "2026-09-23T10:38:20.309Z",
+    "type": "PAID",
+    "status": "NOT_STARTED",
+    "remainingCredits": {
+      "amount": 100,
+      "unit": "USD"
+    }
+  },
+  "regionalCrossCheck": {
+    "us-east-1": "ENABLED_BY_DEFAULT",
+    "ap-south-1": "ENABLED_BY_DEFAULT",
+    "ap-south-1Services": {
+      "cloudformation": "OptInRequired",
+      "lambda": "SubscriptionRequiredException",
+      "ses": "SubscriptionRequiredException"
+    }
+  },
+  "billingObservation": {
+    "provider": "AWS India",
+    "paymentMethodCount": 0,
+    "defaultPaymentMode": "Manual bill payments",
+    "pageText": "There are no payment methods on file. Add a new payment method.",
+    "supportPlan": "Basic Support",
+    "addPaymentForm": "Available; displays a refundable INR 2 verification transaction",
+    "paymentAdded": false,
+    "bankVerificationAttempted": false,
+    "customerVerification": "Verified",
+    "observedOn": "2026-09-23"
+  },
+  "interpretation": "Authenticated service-subscription errors persist in both selected regions. Region opt-in and CLI authentication are not the remaining blockers. Billing currently has no saved payment method. This is a concrete discrepancy to investigate, not proof that no earlier verification occurred or that adding a method guarantees immediate activation.",
+  "registrationResume": "Returned to Console Home without an outstanding form after a fresh attempt on 23 September",
+  "externalMessagesSent": 0,
+  "modelInvocations": 0
+}
