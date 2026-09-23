@@ -1,6 +1,6 @@
-# AWS account activation support draft
+# AWS account activation support request
 
-Updated on 23 September 2026 after restoring CLI sign-in and inspecting billing, support and customer verification directly. **Prepared for review, not sent.** No private account identifiers, contact details, payment information or identity documents are included.
+Updated on 23 September 2026 after restoring CLI sign-in and inspecting billing, support and customer verification directly. **Authorised and sent to the AWS Support assistant on 23 September. A human-support case has not been created.** No private account identifiers, contact details, payment information or identity documents are included.
 
 ## Subject
 
@@ -32,7 +32,7 @@ Shivam Gupta
 
 The payment page is available in Safari. It offers a refundable INR 2 verification transaction when adding a payment method. Completing a bank/card verification requires the account owner. A missing saved method is a discrepancy to resolve, not proof that an earlier verification failed or that adding a method guarantees activation.
 
-If the owner has already completed payment verification successfully, send this request to AWS Account and Billing Support only after explicit authorisation. The current support dashboard starts with an Issue description box and a Send message button. No support message or case has been submitted.
+The owner explicitly authorised sending this request. The exact message was entered, verified and submitted through the signed-in AWS Support dashboard. AWS saved a support interaction and its automated assistant could not identify a recommendation. The Create a case form was reached with the message populated, but repeated Safari rendering/control failures prevented completion. No final case submission occurred in the browser. A fallback CreateCase API call returned SubscriptionRequiredException. No case ID was issued, and the request is not yet confirmed in the human-support queue. Continue the existing saved interaction rather than sending a duplicate. Authorisation remains valid; no new permission to send the same request is needed.
 
 ## Evidence and references
 
