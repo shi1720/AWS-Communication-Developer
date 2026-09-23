@@ -16,14 +16,20 @@
     "four captioned gallery images",
     "private code repository access",
     "AWS architecture JPEG attachment",
-    "WhatsApp implementation disclosure"
+    "WhatsApp implementation disclosure",
+    "entrant-confirmed country of residence and AWS Partner headquarters country",
+    "NO selected for live AWS End User Messaging Social usage"
   ],
   "unresolved": [
     "genuine ACE opportunity ID",
     "verified AWS CDS runtime declarations",
-    "country and AWS Partner headquarters facts",
     "age and conflict-of-interest declarations"
   ],
   "finalSubmitted": false,
-  "savedStoryTestCount": 127
+  "savedStoryTestCount": 127,
+  "lastFormCheckLocalDate": "2026-09-24",
+  "lastFormCheckTimezone": "Asia/Kolkata",
+  "partnerAccessRecheck": "Legacy Partner Central and migrated AWS Console require sign-in; CLI session expired. No current partner list or ACE ID could be retrieved.",
+  "finalizationPageReached": true,
+  "finalTermsAccepted": false
 }
